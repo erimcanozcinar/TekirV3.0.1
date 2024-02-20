@@ -667,5 +667,5 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: \
  /usr/local/include/qpOASES/extras/SolutionAnalysis.hpp \
  /usr/local/include/qpOASES/extras/SolutionAnalysis.ipp \
  /usr/local/include/allegro5/allegro_native_dialog.h \
- /home/erim/RaiSim_Simulations/TekirV3.0.1/include/trajectory.hpp \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/trajectorygeneration.hpp \
  /home/erim/RaiSim_Simulations/TekirV3.0.1/include/functions.hpp

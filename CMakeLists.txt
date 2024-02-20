@@ -8,7 +8,7 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIRS} "/usr/local/include")
 link_directories("/usr/local/lib")
 
-add_executable(tekirV3 src/main.cpp src/trajectory.cpp src/functions.cpp)
+add_executable(tekirV3 src/main.cpp src/trajectory.cpp src/functions.cpp src/trajectorygeneration.cpp)
 
 target_link_libraries(tekirV3 PUBLIC raisim::raisim pthread)
 target_include_directories(tekirV3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

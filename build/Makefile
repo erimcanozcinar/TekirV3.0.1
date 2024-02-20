@@ -201,6 +201,30 @@ src/trajectory.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tekirV3.dir/build.make CMakeFiles/tekirV3.dir/src/trajectory.cpp.s
 .PHONY : src/trajectory.cpp.s
 
+src/trajectorygeneration.o: src/trajectorygeneration.cpp.o
+.PHONY : src/trajectorygeneration.o
+
+# target to build an object file
+src/trajectorygeneration.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tekirV3.dir/build.make CMakeFiles/tekirV3.dir/src/trajectorygeneration.cpp.o
+.PHONY : src/trajectorygeneration.cpp.o
+
+src/trajectorygeneration.i: src/trajectorygeneration.cpp.i
+.PHONY : src/trajectorygeneration.i
+
+# target to preprocess a source file
+src/trajectorygeneration.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tekirV3.dir/build.make CMakeFiles/tekirV3.dir/src/trajectorygeneration.cpp.i
+.PHONY : src/trajectorygeneration.cpp.i
+
+src/trajectorygeneration.s: src/trajectorygeneration.cpp.s
+.PHONY : src/trajectorygeneration.s
+
+# target to generate assembly for a file
+src/trajectorygeneration.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tekirV3.dir/build.make CMakeFiles/tekirV3.dir/src/trajectorygeneration.cpp.s
+.PHONY : src/trajectorygeneration.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -219,6 +243,9 @@ help:
 	@echo "... src/trajectory.o"
 	@echo "... src/trajectory.i"
 	@echo "... src/trajectory.s"
+	@echo "... src/trajectorygeneration.o"
+	@echo "... src/trajectorygeneration.i"
+	@echo "... src/trajectorygeneration.s"
 .PHONY : help
 
 

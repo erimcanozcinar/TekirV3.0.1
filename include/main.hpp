@@ -11,7 +11,7 @@
 #include <allegro5/allegro.h>
 #include <qpOASES.hpp>
 #include <allegro5/allegro_native_dialog.h>
-#include "trajectory.hpp"
+#include "trajectorygeneration.hpp"
 
 Eigen::Matrix3d Itorso;  
 

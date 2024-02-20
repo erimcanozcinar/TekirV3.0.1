@@ -11,6 +11,7 @@
 #define GRAVITY 9.81
 #define MASS 36.100
 
+double zeroIfNegative(double num);
 bool AreDoubleSame(double dFirstVal, double dSecondVal);
 double mapVal(double inVal, double inMax, double inMin, double outMax, double outMin);
 int signFuncCap(double input, double thresHold);
@@ -19,6 +20,7 @@ bool FuncEqual(double RealTime, double ta, double dt);
 bool FuncGreater(double RealTime, double ta, double dt);
 bool FuncInterval(double RealTime, double ta, double ts, double dt);
 bool FuncLessOrEq(double RealTime, double ta, double dt);
+bool FuncLess(double RealTime, double ta, double dt);
 double FuncAdmitFilt(double In, double PrevOut, double k, double b, double dt);
 double LPF(double Input, double prevOut, double freq, double dt);
 double HPF(double In, double prevIn, double prevOut, double g, double dt);

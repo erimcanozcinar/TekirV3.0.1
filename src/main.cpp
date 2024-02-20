@@ -20,8 +20,6 @@ int main(int argc, char** argv) {
     quadruped->getCollisionBody("Foot_rb/0").setMaterial("rubber");
     /* #endregion */
 
-    
-
     /* #region: Create Log file */
     FILE* fp0;
     fp0 = fopen("/home/erim/RaiSim_Simulations/TekirV3.0.1/Log/dataLog.txt", "w");
@@ -60,7 +58,7 @@ int main(int argc, char** argv) {
 
     /* #region: Init classes*/
     controller jStick;
-    trajectory traj;
+    CoMPreviewTrajectory traj;
     /* #endregion */
 
     /* #region: Initialize Robot */
@@ -101,7 +99,7 @@ int main(int argc, char** argv) {
         cmd_Vx = jStick.joyCmd[0]; cmd_Vy = jStick.joyCmd[1];
         cmd_yaw = cmdJoyF[2];  cmd_pitch = cmdJoyF[3]; cmd_roll = cmdJoyF[4];
 
-        traj.trajGeneration(t, jStick.walkEnable, cmd_Vx, cmd_Vy, cmdJoyF[5], dt);
+        traj.trajGeneration_preview(t, jStick.walkEnable, cmd_Vx, cmd_Vy, pre_cmdJoyF[5], cmdJoyF[5], dt);
         /* #endregion */
         
         /* #region: CONTACT DEFINITION START */

@@ -1,5 +1,13 @@
 #include "functions.hpp"
 
+double zeroIfNegative(double num) {
+    if (num < 0) {
+        return 0;
+    } else {
+        return num;
+    }
+}
+
 bool AreDoubleSame(double dFirstVal, double dSecondVal)
 {
     return std::fabs(dFirstVal - dSecondVal) <  1E-6;
@@ -89,6 +97,10 @@ bool FuncLessOrEq(double RealTime, double ta, double dt)
     {
         return false;
     }
+}
+
+bool FuncLess(double RealTime, double ta, double dt) {
+    return RealTime < (ta - dt * 0.25);
 }
 
 double FuncAdmitFilt(double In, double PrevOut, double k, double b, double dt)
