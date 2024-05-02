@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include "vision.hpp"
 
 int main(int argc, char** argv) {
     /*DEniz*/  
@@ -13,19 +14,39 @@ int main(int argc, char** argv) {
     auto ground = world.addGround(0, "steel");
     // ground->setAppearance("hidden");
 
-    auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_new.urdf");
+
+
+    auto quadruped = world.addArticulatedSystem("/home/deno/CS523/rsc/urdf/tekir3mesh_camera.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
+
+    
     quadruped->getCollisionBody("Foot_lf/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_rf/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_lb/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_rb/0").setMaterial("rubber");
     /* #endregion */
+
+
+    /*#region: Camera*/
+
+    auto rgbCamera1 = quadruped->getSensor<raisim::RGBCamera>("realsense_d435:color");
+    rgbCamera1->setMeasurementSource(raisim::Sensor::MeasurementSource::VISUALIZER);
+
+    auto depthSensor1 = quadruped->getSensor<raisim::DepthCamera>("realsense_d435:depth");
+    depthSensor1->setMeasurementSource(raisim::Sensor::MeasurementSource::VISUALIZER);
+
+    std::vector<raisim::Vec<3>> pointCloudFromConversion;
+
+
+    
+
+    /*#endregion*/
     
     /* #region: Create Log file */
     FILE* fp0;
     FILE* fp1;
-    fp0 = fopen("/home/erim/RaiSim_Simulations/TekirV3.0.1/Log/dataLog.txt", "w");
+    fp0 = fopen("/home/deno/CS523/Log/dataLog.txt", "w");
     /* #endregion */
 
     /* #region: Allegro */
@@ -81,6 +102,8 @@ int main(int argc, char** argv) {
     server.setMap("default");
     server.focusOn(quadruped);
     server.launchServer();
+
+    auto dummySphere1 = server.addVisualSphere("dummy1", 0.05, 1);
     /* #endregion */
 
     while (!jStick.close) {
@@ -102,6 +125,27 @@ int main(int argc, char** argv) {
         cmd_pitch = cmdJoyF[3]; cmd_roll = cmdJoyF[4];
         traj.trajGeneration(t, jStick.walkEnable, cmd_Vx, cmd_Vy, cmd_yaw, cmdJoyF[5], dt);
         /* #endregion */
+
+
+
+        /*#region: CAPTURE*/
+
+        depthSensor1->lockMutex();
+        const auto &depth = depthSensor1->getDepthArray();
+        depthSensor1->depthToPointCloud(depth, pointCloudFromConversion, false); // this method lets you convert depth values to 3D points
+
+
+        auto& posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
+        depthSensor1->unlockMutex();
+
+
+        std::cout << pointCloudFromConversion[0].e() << "\n";
+
+       
+        dummySphere1->setPosition(posFromRaisim[0].e());
+
+
+        /* #endregion*/
         
         /* #region: CONTACT DEFINITION */
         for (auto& contact : quadruped->getContacts()) // LF:3, RF:2, LB:1, RB:0
