@@ -1,12 +1,68 @@
 #include "main.hpp"
-#include "vision.hpp"
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
+
+std::vector<char> img;
+
+void* vision(void* arg){
+    raisim::World world1;
+
+    world1.setTimeStep(0.001);
+    
+    controller joyStick;
+    pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+    al_init();
+    al_install_joystick();
+    ALLEGRO_EVENT_QUEUE *event_queue1 = al_create_event_queue();
+    al_register_event_source(event_queue1, al_get_joystick_event_source());
+    ALLEGRO_EVENT event1; 
+
+
+    while (!joyStick.close) {
+        pthread_mutex_lock(&mutex);
+        // RS_TIMED_LOOP(int(world1.getTimeStep()*1e6));
+        // double t = world1.getWorldTime();
+        // double dt = world1.getTimeStep();
+
+        joyStick.dualShockController(event_queue1, event1);
+
+        if(img.data() != NULL) {
+            cv::Mat image(480, 640, CV_8UC4, img.data());
+            cv::Mat bgrImage;  // Output BGR image
+            cv::cvtColor(image, bgrImage, cv::COLOR_BGRA2BGR);
+
+            cv::imshow("image", bgrImage);
+            }
+        if(img.data() == NULL) {RSINFO(0)}
+
+        // cv::Mat bgrImage;  // Output BGR image
+        // cv::cvtColor(image, bgrImage, cv::COLOR_BGRA2BGR);
+
+        // cv::imshow("image", bgrImage);
+
+        if (cv::waitKey(10) == 'q') {  // Exit on 'q' key press
+            break;
+        }
+        
+        // RSINFO(img.data());
+
+        // world1.integrate();
+        pthread_mutex_unlock(&mutex);
+    }
+    pthread_exit(nullptr);
+    cv::destroyAllWindows();
+
+}
 
 int main(int argc, char** argv) {
     /*DEniz*/  
     /* #region: Raisim */
+    raisim::World world;
     auto binaryPath = raisim::Path::setFromArgv(argv[0]);
     raisim::World::setActivationKey(binaryPath.getDirectory() + "\\activation.raisim");
-    raisim::World world;
 
     world.setTimeStep(0.001);
     world.setMaterialPairProp("steel", "steel", 0.95, 0.95, 0.001, 0.95, 0.001);
@@ -16,7 +72,7 @@ int main(int argc, char** argv) {
 
 
 
-    auto quadruped = world.addArticulatedSystem("/home/deno/CS523/rsc/urdf/tekir3mesh_camera.urdf");
+    auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_camera.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
 
@@ -26,7 +82,6 @@ int main(int argc, char** argv) {
     quadruped->getCollisionBody("Foot_lb/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_rb/0").setMaterial("rubber");
     /* #endregion */
-
 
     /*#region: Camera*/
 
@@ -38,15 +93,12 @@ int main(int argc, char** argv) {
 
     std::vector<raisim::Vec<3>> pointCloudFromConversion;
 
-
-    
-
     /*#endregion*/
     
     /* #region: Create Log file */
     FILE* fp0;
     FILE* fp1;
-    fp0 = fopen("/home/deno/CS523/Log/dataLog.txt", "w");
+    fp0 = fopen("../Log/dataLog.txt", "w");
     /* #endregion */
 
     /* #region: Allegro */
@@ -99,15 +151,19 @@ int main(int argc, char** argv) {
 
     /* #region: Launch raisim server for visualization.Can be visualized on raisimUnity */
     raisim::RaisimServer server(&world);
-    server.setMap("default");
     server.focusOn(quadruped);
     server.launchServer();
 
-    auto dummySphere1 = server.addVisualSphere("dummy1", 0.05, 1);
+    auto box1 = world.addBox(1, 1, 1, 1);
+    box1->setAppearance("red");
+    raisim::Vec<3> boxPos{2,0,1.1};
+    box1->setPosition(boxPos);
+    
     /* #endregion */
+    pthread_t sim_thread;
+    pthread_create(&sim_thread, nullptr, vision, nullptr);  
 
     while (!jStick.close) {
-        auto start_time = std::chrono::high_resolution_clock::now();
         RS_TIMED_LOOP(int(world.getTimeStep()*1e6));
         t = world.getWorldTime();
         dt = world.getTimeStep();
@@ -133,16 +189,17 @@ int main(int argc, char** argv) {
         depthSensor1->lockMutex();
         const auto &depth = depthSensor1->getDepthArray();
         depthSensor1->depthToPointCloud(depth, pointCloudFromConversion, false); // this method lets you convert depth values to 3D points
-
-
         auto& posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
         depthSensor1->unlockMutex();
 
+        rgbCamera1->lockMutex();
+        img = rgbCamera1->getImageBuffer();
+        rgbCamera1->unlockMutex();      
 
-        std::cout << pointCloudFromConversion[0].e() << "\n";
+        // std::cout << img.size() << std::endl;
+        // std::cout << "---------------------------" << "\n";
 
        
-        dummySphere1->setPosition(posFromRaisim[0].e());
 
 
         /* #endregion*/
@@ -362,16 +419,14 @@ int main(int argc, char** argv) {
                  
         server.integrateWorldThreadSafe(); 
 
-        auto end_time = std::chrono::high_resolution_clock::now();
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        // std::cout << traj.ddYc << " microseconds" << std::endl;  
-
         /* Log data (fp0:NewtonEulerTorques, fp1:PD_torques, fp2: InvDynTorques ) */
         fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.Pfoot_RF(0), traj.Pfoot_RF(2), traj.Pfoot_LF(0), traj.Pfoot_LF(2), traj.Yawc/2, traj.ComYaw/2, traj.aa_LF(0));
         // fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.Footx_R(0), traj.Footy_R(0), traj.Footz_R(0), traj.Footx_L(0), traj.Footy_L(0), traj.Footz_L(0), traj.Yaw);
         // fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.localStr_LF(0), traj.localStr_LF(1), traj.Footz_R(0), traj.Footx_L(0), traj.Footy_L(0), traj.Footz_L(0), traj.Yaw);
-        
     }
+
+    pthread_join(sim_thread, nullptr);
+
     server.killServer();
     fclose(fp0);
     al_destroy_event_queue(event_queue);

@@ -11,6 +11,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
 #include "trajectory.hpp"
+#include <pthread.h>
+
 
 Eigen::Matrix3d Itorso;  
 
@@ -93,5 +95,7 @@ double Zroll_LF, Zroll_RF, Zroll_LB, Zroll_RB;
 double Zpitch_LF, Zpitch_RF, Zpitch_LB, Zpitch_RB;
 double Kp_roll = 1.0, Kd_roll = 0.0;
 double Kp_pitch = 1.0, Kd_pitch = 0.0;
+
+void* simulate(void* arg);
 
 #endif
