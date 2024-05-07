@@ -71,6 +71,7 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "source_location": "cpp",
-        "dense": "cpp"
+        "dense": "cpp",
+        "valarray": "cpp"
     }
 }

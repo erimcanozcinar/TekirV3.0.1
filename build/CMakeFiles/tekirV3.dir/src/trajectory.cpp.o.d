@@ -1,8 +1,7 @@
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: \
- /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp \
- /usr/include/stdc-predef.h \
- /home/erim/RaiSim_Simulations/TekirV3.0.1/include/trajectory.hpp \
- /usr/include/eigen3/Eigen/Dense /usr/include/eigen3/Eigen/Core \
+ /home/deno/CS523/src/trajectory.cpp /usr/include/stdc-predef.h \
+ /home/deno/CS523/include/trajectory.hpp /usr/include/eigen3/Eigen/Dense \
+ /usr/include/eigen3/Eigen/Core \
  /usr/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  /usr/include/eigen3/Eigen/src/Core/util/Macros.h \
  /usr/include/c++/11/cmath \
@@ -465,5 +464,4 @@ CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: \
  /usr/local/include/allegro5/alcompat.h \
  /usr/local/include/allegro5/platform/alunix.h \
  /usr/local/include/allegro5/allegro_native_dialog.h \
- /home/erim/RaiSim_Simulations/TekirV3.0.1/include/functions.hpp \
- /usr/include/c++/11/iostream
+ /home/deno/CS523/include/functions.hpp /usr/include/c++/11/iostream

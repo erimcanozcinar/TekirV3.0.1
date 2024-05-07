@@ -1,5 +1,6 @@
 #include "main.hpp"
 #include <opencv2/core.hpp>
+<<<<<<< HEAD
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -56,6 +57,16 @@ void* vision(void* arg){
     cv::destroyAllWindows();
 
 }
+=======
+#include "opencv2/objdetect.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include <iostream>
+#include <opencv2/opencv.hpp>
+
+using namespace std;
+using namespace cv;
+>>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
 
 int main(int argc, char** argv) {
     /*DEniz*/  
@@ -71,8 +82,12 @@ int main(int argc, char** argv) {
     // ground->setAppearance("hidden");
 
 
+<<<<<<< HEAD
 
     auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_camera.urdf");
+=======
+    auto quadruped = world.addArticulatedSystem("/home/deno/CS523/rsc/urdf/tekir3mesh_camera.urdf");
+>>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
 
@@ -154,17 +169,36 @@ int main(int argc, char** argv) {
     server.focusOn(quadruped);
     server.launchServer();
 
+<<<<<<< HEAD
     auto box1 = world.addBox(1, 1, 1, 1);
     box1->setAppearance("red");
     raisim::Vec<3> boxPos{2,0,1.1};
     box1->setPosition(boxPos);
     
+=======
+    auto box_1 = world.addBox(1,1,1,1);
+    box_1->setAppearance("red");
+    box_1->setPosition(2,0,1.1);
+
+    int height = 480;
+    int width = 640;
+
+    Scalar lower_red(0, 100, 100);
+    Scalar upper_red(10, 255, 255);
+
+>>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
     /* #endregion */
     pthread_t sim_thread;
     pthread_create(&sim_thread, nullptr, vision, nullptr);  
 
+
     while (!jStick.close) {
+<<<<<<< HEAD
         RS_TIMED_LOOP(int(world.getTimeStep()*1e6));
+=======
+        auto start_time = std::chrono::high_resolution_clock::now();
+        // RS_TIMED_LOOP(int(world.getTimeStep()*1e2));
+>>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
         t = world.getWorldTime();
         dt = world.getTimeStep();
 
@@ -187,8 +221,9 @@ int main(int argc, char** argv) {
         /*#region: CAPTURE*/
 
         depthSensor1->lockMutex();
-        const auto &depth = depthSensor1->getDepthArray();
+        auto depth = depthSensor1->getDepthArray();
         depthSensor1->depthToPointCloud(depth, pointCloudFromConversion, false); // this method lets you convert depth values to 3D points
+<<<<<<< HEAD
         auto& posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
         depthSensor1->unlockMutex();
 
@@ -200,7 +235,74 @@ int main(int argc, char** argv) {
         // std::cout << "---------------------------" << "\n";
 
        
+=======
 
+
+        auto posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
+        depthSensor1->unlockMutex();
+
+        
+
+        rgbCamera1->lockMutex();
+        auto img = rgbCamera1->getImageBuffer();
+        rgbCamera1->unlockMutex();
+
+        // BGRA formatındaki görüntüyü Mat nesnesine dönüştür
+        Mat bgra_frame(height, width, CV_8UC4, img.data());
+>>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
+
+        // Görüntüyü BGR formatına dönüştür
+        Mat bgr_frame;
+        cvtColor(bgra_frame, bgr_frame, COLOR_BGRA2BGR);
+
+        // Görüntüyü HSV renk uzayına dönüştür
+        Mat hsv;
+        cvtColor(bgr_frame, hsv, COLOR_BGR2HSV);
+
+        // Kırmızı rengi tespit etmek için maske oluştur
+        Mat mask;
+        inRange(hsv, lower_red, upper_red, mask);
+
+        // Maskeyi kullanarak kırmızı nesneyi bul
+        vector<vector<Point>> contours;
+        findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+
+
+
+        for (size_t i = 0; i < contours.size(); ++i)
+        {
+            // Kontur alanını hesapla
+            double area = contourArea(contours[i]);
+            if (area > 10)
+            { // Minimum alan sınırlaması (düşürülmüş)
+                // Konturun etrafına dikdörtgen çiz
+                Rect bounding_rect = boundingRect(contours[i]);
+                rectangle(bgr_frame, bounding_rect, Scalar(0, 255, 0), 2);
+
+                // Dikdörtgenin merkezini bul
+                Point center(bounding_rect.x + bounding_rect.width / 2,
+                             bounding_rect.y + bounding_rect.height / 2);
+
+                // Dikdörtgenin merkezini görüntüde işaretle
+                circle(bgr_frame, center, 5, Scalar(0, 0, 255), -1);
+
+                // cout << "Nesne konumu: " << center  << endl;
+            }
+        }
+
+        
+        // Örnek bir derinlik dizisi alalım (sadece ilk piksel için)
+        float depthValue = pointCloudFromConversion[30000]; // İlgili pikselin derinlik değeri
+        float depthValuey = pointCloudFromConversion[15000];
+        // Kamera özellikleri
+        float focalLength = 640.0f; // Kamera odak uzaklığı 
+
+        // Pikselin kameradan olan uzaklığını hesaplayalım
+        float distancex = depthValue / focalLength; // Uzaklık hesaplaması
+        float distancey = depthValuey /focalLength;
+
+        cout << "Nesne uzaklığı: " << distancex << "          " << distancey <<" metre" << endl;
 
         /* #endregion*/
         
