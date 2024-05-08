@@ -1,16 +1,25 @@
 #include "main.hpp"
 #include <opencv2/core.hpp>
-<<<<<<< HEAD
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
+using namespace cv;
+using namespace std;
+
+
 std::vector<char> img;
+std::vector<float> depth;
+vector<vector<Point>> contours;
+std::vector<raisim::Vec<3UL>> pointCloudFromConversion;
+double pre_pointCloudFromConversion;
+double boxDist;
+double CenterX, CenterY;
 
 void* vision(void* arg){
     raisim::World world1;
 
-    world1.setTimeStep(0.001);
+    world1.setTimeStep(0.01);
     
     controller joyStick;
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -21,22 +30,79 @@ void* vision(void* arg){
     al_register_event_source(event_queue1, al_get_joystick_event_source());
     ALLEGRO_EVENT event1; 
 
+    int height = 480;
+    int width = 640;
+
+    Scalar lower_red(0, 55, 99); //0,100,100
+    Scalar upper_red(10, 255, 255);
 
     while (!joyStick.close) {
         pthread_mutex_lock(&mutex);
-        // RS_TIMED_LOOP(int(world1.getTimeStep()*1e6));
+        RS_TIMED_LOOP(int(world1.getTimeStep()*1e6));
         // double t = world1.getWorldTime();
         // double dt = world1.getTimeStep();
 
         joyStick.dualShockController(event_queue1, event1);
 
         if(img.data() != NULL) {
-            cv::Mat image(480, 640, CV_8UC4, img.data());
-            cv::Mat bgrImage;  // Output BGR image
-            cv::cvtColor(image, bgrImage, cv::COLOR_BGRA2BGR);
+            cv::Mat image(height, width, CV_8UC4, img.data());
+            cv::Mat bgr_frame;  // Output BGR image
+            cv::cvtColor(image, bgr_frame, cv::COLOR_BGRA2BGR);
 
-            cv::imshow("image", bgrImage);
+
+            // Görüntüyü HSV renk uzayına dönüştür
+            Mat hsv;
+            cvtColor(bgr_frame, hsv, COLOR_BGR2HSV);
+            
+
+
+            // Kırmızı rengi tespit etmek için maske oluştur
+            Mat mask;
+            inRange(hsv, lower_red, upper_red, mask);
+
+            cv::imshow("image", mask);
+
+            // Maskeyi kullanarak kırmızı nesneyi bul
+            findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+            for (size_t i = 0; i < contours.size(); ++i)
+            {
+                // Kontur alanını hesapla
+                double area = contourArea(contours[i]);
+                if (area > 10)
+                { // Minimum alan sınırlaması (düşürülmüş)
+                    // Konturun etrafına dikdörtgen çiz
+                    Rect bounding_rect = boundingRect(contours[i]);
+                    rectangle(bgr_frame, bounding_rect, Scalar(0, 255, 0), 2);
+
+                    // Dikdörtgenin merkezini bul
+                    Point center(bounding_rect.x + bounding_rect.width / 2,
+                                bounding_rect.y + bounding_rect.height / 2);
+                    CenterX = center.x;
+                    CenterY = center.y;
+
+                    // Dikdörtgenin merkezini görüntüde işaretle
+                    circle(bgr_frame, center, 5, Scalar(0, 0, 255), -1);
+
+
+                    // RSWARN(center)
+                    
+                    if(pointCloudFromConversion[center.x * center.y][0] != 100){ pre_pointCloudFromConversion = pointCloudFromConversion[center.x * center.y][0]; }
+                    else { pre_pointCloudFromConversion = pre_pointCloudFromConversion; }
+
+                    if(pointCloudFromConversion[center.x * center.y][0] == 100) { pointCloudFromConversion[center.x * center.y][0] = pre_pointCloudFromConversion; }
+                    else { pointCloudFromConversion[center.x * center.y][0] = pointCloudFromConversion[center.x * center.y][0];}
+                    
+                    boxDist = pointCloudFromConversion[center.x * center.y][0];
+                    // RSINFO(pointCloudFromConversion[center.x * center.y][0])
+
+
+                    // cout << "Nesne konumu: " << center  << endl;
+                }
             }
+
+
+        }
         if(img.data() == NULL) {RSINFO(0)}
 
         // cv::Mat bgrImage;  // Output BGR image
@@ -57,16 +123,6 @@ void* vision(void* arg){
     cv::destroyAllWindows();
 
 }
-=======
-#include "opencv2/objdetect.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/highgui.hpp"
-#include <iostream>
-#include <opencv2/opencv.hpp>
-
-using namespace std;
-using namespace cv;
->>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
 
 int main(int argc, char** argv) {
     /*DEniz*/  
@@ -82,12 +138,8 @@ int main(int argc, char** argv) {
     // ground->setAppearance("hidden");
 
 
-<<<<<<< HEAD
 
     auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_camera.urdf");
-=======
-    auto quadruped = world.addArticulatedSystem("/home/deno/CS523/rsc/urdf/tekir3mesh_camera.urdf");
->>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
 
@@ -106,7 +158,7 @@ int main(int argc, char** argv) {
     auto depthSensor1 = quadruped->getSensor<raisim::DepthCamera>("realsense_d435:depth");
     depthSensor1->setMeasurementSource(raisim::Sensor::MeasurementSource::VISUALIZER);
 
-    std::vector<raisim::Vec<3>> pointCloudFromConversion;
+    
 
     /*#endregion*/
     
@@ -169,36 +221,21 @@ int main(int argc, char** argv) {
     server.focusOn(quadruped);
     server.launchServer();
 
-<<<<<<< HEAD
-    auto box1 = world.addBox(1, 1, 1, 1);
-    box1->setAppearance("red");
-    raisim::Vec<3> boxPos{2,0,1.1};
-    box1->setPosition(boxPos);
+  
     
-=======
     auto box_1 = world.addBox(1,1,1,1);
     box_1->setAppearance("red");
-    box_1->setPosition(2,0,1.1);
+    double boxPosX = 1.2;
+    double boxPosY = 0;
+    box_1->setPosition(boxPosX,boxPosY,0.5);
 
-    int height = 480;
-    int width = 640;
-
-    Scalar lower_red(0, 100, 100);
-    Scalar upper_red(10, 255, 255);
-
->>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
     /* #endregion */
     pthread_t sim_thread;
     pthread_create(&sim_thread, nullptr, vision, nullptr);  
 
 
     while (!jStick.close) {
-<<<<<<< HEAD
         RS_TIMED_LOOP(int(world.getTimeStep()*1e6));
-=======
-        auto start_time = std::chrono::high_resolution_clock::now();
-        // RS_TIMED_LOOP(int(world.getTimeStep()*1e2));
->>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
         t = world.getWorldTime();
         dt = world.getTimeStep();
 
@@ -209,11 +246,51 @@ int main(int argc, char** argv) {
             cmdJoyF[i] = LPF(jStick.joyCmd[i], pre_cmdJoyF[i], 2*PI*0.2, dt);
             pre_cmdJoyF[i] = cmdJoyF[i];
         }
-        cmd_Vx = jStick.joyCmd[0]; cmd_Vy = jStick.joyCmd[1];
-        if(jStick.walkEnable) { cmd_yaw = jStick.joyCmd[2]; }
-        else { cmd_yaw = cmdJoyF[2]; }
+        // cmd_Vx = jStick.joyCmd[0]; cmd_Vy = jStick.joyCmd[1];
+        // if(jStick.walkEnable) { cmd_yaw = jStick.joyCmd[2]; }
+        // else { cmd_yaw = cmdJoyF[2]; }
         cmd_pitch = cmdJoyF[3]; cmd_roll = cmdJoyF[4];
-        traj.trajGeneration(t, jStick.walkEnable, cmd_Vx, cmd_Vy, cmd_yaw, cmdJoyF[5], dt);
+
+        boxPosX = boxPosX + jStick.joyCmd[0]*0.0035;
+        boxPosY = boxPosY + jStick.joyCmd[1]*0.0035;
+        box_1->setPosition(boxPosX,boxPosY,0.5);
+
+        
+        
+
+        if(contours.size() != 0)
+        {
+            if(boxDist > 1.2){
+                cmd_Vx = -1*(1.2-boxDist);
+            }else if(boxDist < 1){
+                cmd_Vx = -1*(1-boxDist);
+            }else{
+                cmd_Vx = 0.0;
+            }
+            if(abs(cmd_Vx) > 0.4){
+                if(cmd_Vx > 0) cmd_Vx = 0.4;
+                else if(cmd_Vx < 0) cmd_Vx = -0.4;
+                else cmd_Vx = 0.0;
+            } 
+
+            
+            if(jStick.walkEnable) { 
+                cmd_yaw = (320 - CenterX)*0.001;
+                if(abs(cmd_yaw) > 5*PI/180){
+                    if(cmd_yaw > 0) cmd_yaw = 5*PI/180;
+                    else if(cmd_yaw < 0) cmd_yaw = -5*PI/180;
+                    else cmd_yaw = 0*PI/180;
+                }
+            }
+            else { 
+                cmd_yaw = cmdJoyF[2];
+            }
+
+        }
+
+
+        traj.trajGeneration(t, jStick.walkEnable, cmd_Vx, cmd_Vy, cmd_yaw, cmdJoyF[5], dt);       
+
         /* #endregion */
 
 
@@ -221,88 +298,13 @@ int main(int argc, char** argv) {
         /*#region: CAPTURE*/
 
         depthSensor1->lockMutex();
-        auto depth = depthSensor1->getDepthArray();
-        depthSensor1->depthToPointCloud(depth, pointCloudFromConversion, false); // this method lets you convert depth values to 3D points
-<<<<<<< HEAD
-        auto& posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
-        depthSensor1->unlockMutex();
+        depth = depthSensor1->getDepthArray();
+        depthSensor1->depthToPointCloud(depth, pointCloudFromConversion, true); // this method lets you convert depth values to 3D points
+        depthSensor1->unlockMutex();        
 
         rgbCamera1->lockMutex();
         img = rgbCamera1->getImageBuffer();
-        rgbCamera1->unlockMutex();      
-
-        // std::cout << img.size() << std::endl;
-        // std::cout << "---------------------------" << "\n";
-
-       
-=======
-
-
-        auto posFromRaisim = depthSensor1->get3DPoints(); // this method returns garbage if the update is done by the visualizer
-        depthSensor1->unlockMutex();
-
-        
-
-        rgbCamera1->lockMutex();
-        auto img = rgbCamera1->getImageBuffer();
         rgbCamera1->unlockMutex();
-
-        // BGRA formatındaki görüntüyü Mat nesnesine dönüştür
-        Mat bgra_frame(height, width, CV_8UC4, img.data());
->>>>>>> 828eba8955bbb3bf78915781c3026392269f0b36
-
-        // Görüntüyü BGR formatına dönüştür
-        Mat bgr_frame;
-        cvtColor(bgra_frame, bgr_frame, COLOR_BGRA2BGR);
-
-        // Görüntüyü HSV renk uzayına dönüştür
-        Mat hsv;
-        cvtColor(bgr_frame, hsv, COLOR_BGR2HSV);
-
-        // Kırmızı rengi tespit etmek için maske oluştur
-        Mat mask;
-        inRange(hsv, lower_red, upper_red, mask);
-
-        // Maskeyi kullanarak kırmızı nesneyi bul
-        vector<vector<Point>> contours;
-        findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-
-
-
-
-        for (size_t i = 0; i < contours.size(); ++i)
-        {
-            // Kontur alanını hesapla
-            double area = contourArea(contours[i]);
-            if (area > 10)
-            { // Minimum alan sınırlaması (düşürülmüş)
-                // Konturun etrafına dikdörtgen çiz
-                Rect bounding_rect = boundingRect(contours[i]);
-                rectangle(bgr_frame, bounding_rect, Scalar(0, 255, 0), 2);
-
-                // Dikdörtgenin merkezini bul
-                Point center(bounding_rect.x + bounding_rect.width / 2,
-                             bounding_rect.y + bounding_rect.height / 2);
-
-                // Dikdörtgenin merkezini görüntüde işaretle
-                circle(bgr_frame, center, 5, Scalar(0, 0, 255), -1);
-
-                // cout << "Nesne konumu: " << center  << endl;
-            }
-        }
-
-        
-        // Örnek bir derinlik dizisi alalım (sadece ilk piksel için)
-        float depthValue = pointCloudFromConversion[30000]; // İlgili pikselin derinlik değeri
-        float depthValuey = pointCloudFromConversion[15000];
-        // Kamera özellikleri
-        float focalLength = 640.0f; // Kamera odak uzaklığı 
-
-        // Pikselin kameradan olan uzaklığını hesaplayalım
-        float distancex = depthValue / focalLength; // Uzaklık hesaplaması
-        float distancey = depthValuey /focalLength;
-
-        cout << "Nesne uzaklığı: " << distancex << "          " << distancey <<" metre" << endl;
 
         /* #endregion*/
         
@@ -465,10 +467,10 @@ int main(int argc, char** argv) {
         Fmatrix = VMC(Rf_LF, Rf_RF, Rf_LB, Rf_RB, Fcon_LF, Fcon_RF, Fcon_LB, Fcon_RB, Fvmc, dt);
         // Fmatrix = VMC(traj.Pfoot_LF-Pcom, traj.Pfoot_RF-Pcom, Rf_LB, Rf_RB, Fcon_LF, Fcon_RF, Fcon_LB, Fcon_RB, Fvmc, dt);
         // Fmatrix = refForceCalc4(traj.Pfoot_LF-Pcom, traj.Pfoot_RF-Pcom, traj.Pfoot_LB-Pcom, traj.Pfoot_RB-Pcom,Q_LF,Q_RF,Q_LB,Q_RB,dt);
-        F1cont << Fmatrix(0, 0), Fmatrix(0, 1), Fmatrix(0, 2);
-        F2cont << Fmatrix(1, 0), Fmatrix(1, 1), Fmatrix(1, 2);
-        F3cont << Fmatrix(2, 0), Fmatrix(2, 1), Fmatrix(2, 2);
-        F4cont << Fmatrix(3, 0), Fmatrix(3, 1), Fmatrix(3, 2);
+        F1cont << 0*Fmatrix(0, 0), 0*Fmatrix(0, 1), Fmatrix(0, 2);
+        F2cont << 0*Fmatrix(1, 0), 0*Fmatrix(1, 1), Fmatrix(1, 2);
+        F3cont << 0*Fmatrix(2, 0), 0*Fmatrix(2, 1), Fmatrix(2, 2);
+        F4cont << 0*Fmatrix(3, 0), 0*Fmatrix(3, 1), Fmatrix(3, 2);
         /* #endregion */
         
         /* #region: INVERSE DYNAMICS */
@@ -498,7 +500,7 @@ int main(int argc, char** argv) {
         }
         /* #endregion */
 
-        /* #region: SEND COMMEND TO THE ROBOT */
+        /* #region: SEND COMMAND TO THE ROBOT */
         F << 0, 0, 0, 0, 0, 0, Tau_LF(0), Tau_LF(1), Tau_LF(2), Tau_RF(0), Tau_RF(1), Tau_RF(2), Tau_LB(0), Tau_LB(1), Tau_LB(2), Tau_RB(0), Tau_RB(1), Tau_RB(2);
         quadruped->setGeneralizedForce(F);
         /* #endregion */
