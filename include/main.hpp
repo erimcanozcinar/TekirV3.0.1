@@ -96,6 +96,12 @@ double Zpitch_LF, Zpitch_RF, Zpitch_LB, Zpitch_RB;
 double Kp_roll = 1.0, Kd_roll = 0.0;
 double Kp_pitch = 1.0, Kd_pitch = 0.0;
 
-void* simulate(void* arg);
+/* Mobile robot parameters */
+double wL_ref, wR_ref;
+double wheelDist = 0.51, wheelRadius = 0.1975;
+double dXref, dQref;
+Eigen::Vector3d Vel_robot;
+
+void* vision(void* arg);
 
 #endif

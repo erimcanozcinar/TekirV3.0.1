@@ -11,15 +11,15 @@ using namespace std;
 std::vector<char> img;
 std::vector<float> depth;
 vector<vector<Point>> contours;
-std::vector<raisim::Vec<3UL>> pointCloudFromConversion;
+std::vector<raisim::Vec<3UL>> pointCloudFromConversion, aa;
 double pre_pointCloudFromConversion;
-double boxDist;
+double boxDist, area;
 double CenterX, CenterY;
 
 void* vision(void* arg){
     raisim::World world1;
 
-    world1.setTimeStep(0.01);
+    world1.setTimeStep(0.001);
     
     controller joyStick;
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -33,8 +33,15 @@ void* vision(void* arg){
     int height = 480;
     int width = 640;
 
-    Scalar lower_red(0, 55, 99); //0,100,100
-    Scalar upper_red(10, 255, 255);
+    // Scalar lower_red(0,40,100); //0,100,100
+    // Scalar upper_red(253, 255, 255);
+
+    cv::Scalar lower_red(0, 120, 70);
+    cv::Scalar upper_red(10, 255, 255);
+
+    cv::Scalar lower_red_high(170, 120, 70);
+    cv::Scalar upper_red_high(180, 255, 255);
+
 
     while (!joyStick.close) {
         pthread_mutex_lock(&mutex);
@@ -57,18 +64,32 @@ void* vision(void* arg){
 
 
             // Kırmızı rengi tespit etmek için maske oluştur
-            Mat mask;
-            inRange(hsv, lower_red, upper_red, mask);
+            // Mat mask;
+            // inRange(hsv, lower_red, upper_red, mask);
 
-            cv::imshow("image", mask);
+            cv::Mat mask1, mask2;
+            cv::inRange(hsv, lower_red, upper_red, mask1);
+            cv::inRange(hsv, lower_red_high, upper_red_high, mask2);
+
+            // İki maskeyi birleştir
+            cv::Mat combined_mask;
+            cv::bitwise_or(mask1, mask2, combined_mask);
+
+            // Maske kullanarak görüntüyü maskele
+            cv::Mat masked_image;
+            cv::bitwise_and(image, image, masked_image, combined_mask);
+
+            cv::Mat gray_mask;
+            cv::cvtColor(masked_image, gray_mask, cv::COLOR_BGR2GRAY);
+
 
             // Maskeyi kullanarak kırmızı nesneyi bul
-            findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+            findContours(gray_mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
             for (size_t i = 0; i < contours.size(); ++i)
             {
                 // Kontur alanını hesapla
-                double area = contourArea(contours[i]);
+                area = contourArea(contours[i]);
                 if (area > 10)
                 { // Minimum alan sınırlaması (düşürülmüş)
                     // Konturun etrafına dikdörtgen çiz
@@ -83,24 +104,29 @@ void* vision(void* arg){
 
                     // Dikdörtgenin merkezini görüntüde işaretle
                     circle(bgr_frame, center, 5, Scalar(0, 0, 255), -1);
+                    circle(gray_mask, center, 5, Scalar(0, 0, 255), -1);
 
-
+                    
                     // RSWARN(center)
                     
-                    if(pointCloudFromConversion[center.x * center.y][0] != 100){ pre_pointCloudFromConversion = pointCloudFromConversion[center.x * center.y][0]; }
+                    if(pointCloudFromConversion[center.x * center.y][0] < 20){ pre_pointCloudFromConversion = pointCloudFromConversion[center.x * center.y][0]; }
                     else { pre_pointCloudFromConversion = pre_pointCloudFromConversion; }
 
-                    if(pointCloudFromConversion[center.x * center.y][0] == 100) { pointCloudFromConversion[center.x * center.y][0] = pre_pointCloudFromConversion; }
+                    if(pointCloudFromConversion[center.x * center.y][0] > 20) { pointCloudFromConversion[center.x * center.y][0] = pre_pointCloudFromConversion; }
                     else { pointCloudFromConversion[center.x * center.y][0] = pointCloudFromConversion[center.x * center.y][0];}
                     
                     boxDist = pointCloudFromConversion[center.x * center.y][0];
-                    // RSINFO(pointCloudFromConversion[center.x * center.y][0])
+                    // RSINFO(pointCloudFromConversion[center.x * center.y])
 
 
-                    // cout << "Nesne konumu: " << center  << endl;
+          
+                    RSINFO(pointCloudFromConversion[center.x * center.y][0])
                 }
             }
-
+            cv::imshow("image", bgr_frame);
+            cv::imshow("image1", masked_image);
+            
+            
 
         }
         if(img.data() == NULL) {RSINFO(0)}
@@ -140,6 +166,7 @@ int main(int argc, char** argv) {
 
 
     auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_camera.urdf");
+    auto smb = world.addArticulatedSystem("/home/erim/raisim_ws_v1.1.7/raisimLib-master/rsc/megabot/smb.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
 
@@ -148,6 +175,10 @@ int main(int argc, char** argv) {
     quadruped->getCollisionBody("Foot_rf/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_lb/0").setMaterial("rubber");
     quadruped->getCollisionBody("Foot_rb/0").setMaterial("rubber");
+    smb->getCollisionBody("LF_WHEEL/0").setMaterial("rubber");
+    smb->getCollisionBody("RF_WHEEL/0").setMaterial("rubber");
+    smb->getCollisionBody("LH_WHEEL/0").setMaterial("rubber");
+    smb->getCollisionBody("RH_WHEEL/0").setMaterial("rubber");
     /* #endregion */
 
     /*#region: Camera*/
@@ -214,20 +245,14 @@ int main(int argc, char** argv) {
     Q_RB = fullBodyIKan(traj.Pfoot_RB, Pcom, torsoRot, 4);
     initialConditions << initComX, initComY, initComZ, initQuat_w, initQuat_x, initQuat_y, initQuat_z, Q_LF(0), Q_LF(1), Q_LF(2), Q_RF(0), Q_RF(1), Q_RF(2), Q_LB(0), Q_LB(1), Q_LB(2), Q_RB(0), Q_RB(1), Q_RB(2);
     quadruped->setGeneralizedCoordinate(initialConditions);
+    smb->setGeneralizedCoordinate({2, 0, 0.1975, 1, 0, 0, 0, 0, 0, 0, 0});
     /* #endregion */
 
     /* #region: Launch raisim server for visualization.Can be visualized on raisimUnity */
     raisim::RaisimServer server(&world);
     server.focusOn(quadruped);
-    server.launchServer();
-
-  
+    server.launchServer();  
     
-    auto box_1 = world.addBox(1,1,1,1);
-    box_1->setAppearance("red");
-    double boxPosX = 1.2;
-    double boxPosY = 0;
-    box_1->setPosition(boxPosX,boxPosY,0.5);
 
     /* #endregion */
     pthread_t sim_thread;
@@ -251,25 +276,28 @@ int main(int argc, char** argv) {
         // else { cmd_yaw = cmdJoyF[2]; }
         cmd_pitch = cmdJoyF[3]; cmd_roll = cmdJoyF[4];
 
-        boxPosX = boxPosX + jStick.joyCmd[0]*0.0035;
-        boxPosY = boxPosY + jStick.joyCmd[1]*0.0035;
-        box_1->setPosition(boxPosX,boxPosY,0.5);
+        Vel_robot << jStick.joyCmd[0]*5, 0, 0;
+        Vel_robot = smb->getBaseOrientation().e()*Vel_robot;
 
-        
+        wL_ref = (-Vel_robot(0) + jStick.joyCmd[2]*5*wheelDist*0.5)/wheelRadius;
+        wR_ref = (-Vel_robot(0) - jStick.joyCmd[2]*5*wheelDist*0.5)/wheelRadius;
+        smb->setGeneralizedVelocity({Vel_robot(0),Vel_robot(1),0,0,0,jStick.joyCmd[2]*3,wL_ref*0.5,wR_ref*0.5,wL_ref*0.5,wR_ref*0.5});        
         
 
-        if(contours.size() != 0)
+        if(area > 400)
         {
-            if(boxDist > 1.2){
-                cmd_Vx = -1*(1.2-boxDist);
-            }else if(boxDist < 1){
-                cmd_Vx = -1*(1-boxDist);
+            if(boxDist > 6){
+                cmd_Vx = -0.5*(6.5-boxDist);
+            }else if(boxDist < 4.5){
+                cmd_Vx = -0.5*(4.5-boxDist);
+                RSWARN("CERİ CİDEYRUM")
+                // cmd_Vx = -0.5;
             }else{
                 cmd_Vx = 0.0;
             }
-            if(abs(cmd_Vx) > 0.4){
-                if(cmd_Vx > 0) cmd_Vx = 0.4;
-                else if(cmd_Vx < 0) cmd_Vx = -0.4;
+            if(abs(cmd_Vx) > 0.5){
+                if(cmd_Vx > 0) cmd_Vx = 0.5;
+                else if(cmd_Vx < 0) cmd_Vx = -0.5;
                 else cmd_Vx = 0.0;
             } 
 
@@ -283,9 +311,22 @@ int main(int argc, char** argv) {
                 }
             }
             else { 
-                cmd_yaw = cmdJoyF[2];
+                cmd_yaw = cmdJoyF[2]*0;
             }
 
+        }else{
+            cmd_Vx = 0.0;
+            if(jStick.walkEnable) { 
+                cmd_yaw = (320 - CenterX)*0.001;
+                if(abs(cmd_yaw) > 5*PI/180){
+                    if(cmd_yaw > 0) cmd_yaw = 5*PI/180;
+                    else if(cmd_yaw < 0) cmd_yaw = -5*PI/180;
+                    else cmd_yaw = 0*PI/180;
+                }
+            }
+            else { 
+                cmd_yaw = cmdJoyF[2]*0;
+            }
         }
 
 
