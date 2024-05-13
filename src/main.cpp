@@ -16,6 +16,8 @@ double pre_pointCloudFromConversion;
 double boxDist, area;
 double CenterX, CenterY;
 
+bool walkMode = false;
+
 void* vision(void* arg){
     raisim::World world1;
 
@@ -103,24 +105,31 @@ void* vision(void* arg){
                     CenterY = center.y;
 
                     // Dikdörtgenin merkezini görüntüde işaretle
-                    circle(bgr_frame, center, 5, Scalar(0, 0, 255), -1);
-                    circle(gray_mask, center, 5, Scalar(0, 0, 255), -1);
+                    circle(bgr_frame, center, 5, Scalar(0, 0, 0), -1);
+                    circle(gray_mask, center, 5, Scalar(0, 0, 0), -1);
 
                     
                     // RSWARN(center)
-                    
-                    if(pointCloudFromConversion[center.x * center.y][0] < 20){ pre_pointCloudFromConversion = pointCloudFromConversion[center.x * center.y][0]; }
-                    else { pre_pointCloudFromConversion = pre_pointCloudFromConversion; }
 
-                    if(pointCloudFromConversion[center.x * center.y][0] > 20) { pointCloudFromConversion[center.x * center.y][0] = pre_pointCloudFromConversion; }
-                    else { pointCloudFromConversion[center.x * center.y][0] = pointCloudFromConversion[center.x * center.y][0];}
+                    if(center.x>180 && center.x<460){
+                        walkMode = true;
+                        boxDist = pointCloudFromConversion[center.x * center.y][2];
+                    }else{
+                        walkMode = false;
+                    }
                     
-                    boxDist = pointCloudFromConversion[center.x * center.y][0];
+                    // if(pointCloudFromConversion[center.x * center.y][0] < 20){ pre_pointCloudFromConversion = pointCloudFromConversion[center.x * center.y][0]; }
+                    // else { pre_pointCloudFromConversion = pre_pointCloudFromConversion; }
+
+                    // if(pointCloudFromConversion[center.x * center.y][0] > 20) { pointCloudFromConversion[center.x * center.y][0] = pre_pointCloudFromConversion; }
+                    // else { pointCloudFromConversion[center.x * center.y][0] = pointCloudFromConversion[center.x * center.y][0];}
+                    
+                    // boxDist = pointCloudFromConversion[center.x * center.y][0];
                     // RSINFO(pointCloudFromConversion[center.x * center.y])
 
 
           
-                    RSINFO(pointCloudFromConversion[center.x * center.y][0])
+                    RSINFO(boxDist)
                 }
             }
             cv::imshow("image", bgr_frame);
@@ -284,20 +293,18 @@ int main(int argc, char** argv) {
         smb->setGeneralizedVelocity({Vel_robot(0),Vel_robot(1),0,0,0,jStick.joyCmd[2]*3,wL_ref*0.5,wR_ref*0.5,wL_ref*0.5,wR_ref*0.5});        
         
 
-        if(area > 400)
+        if(walkMode)
         {
-            if(boxDist > 6){
-                cmd_Vx = -0.5*(6.5-boxDist);
-            }else if(boxDist < 4.5){
-                cmd_Vx = -0.5*(4.5-boxDist);
-                RSWARN("CERİ CİDEYRUM")
-                // cmd_Vx = -0.5;
+            if(boxDist > 4){
+                cmd_Vx = -0.5*(4-boxDist);
+            }else if(boxDist < 3){
+                cmd_Vx = -0.5*(3-boxDist);
             }else{
                 cmd_Vx = 0.0;
             }
-            if(abs(cmd_Vx) > 0.5){
-                if(cmd_Vx > 0) cmd_Vx = 0.5;
-                else if(cmd_Vx < 0) cmd_Vx = -0.5;
+            if(abs(cmd_Vx) > 0.4){
+                if(cmd_Vx > 0) cmd_Vx = 0.4;
+                else if(cmd_Vx < 0) cmd_Vx = -0.4;
                 else cmd_Vx = 0.0;
             } 
 
