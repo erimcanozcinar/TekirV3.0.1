@@ -44,6 +44,8 @@ void* vision(void* arg){
     cv::Scalar lower_red_high(170, 120, 70);
     cv::Scalar upper_red_high(180, 255, 255);
 
+    cv::VideoWriter VideoWriter1("/home/erim/RaiSim_Simulations/TekirV3.0.1/Log/output_image/bgr.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, Size(width,height), true);
+    cv::VideoWriter VideoWriter2("/home/erim/RaiSim_Simulations/TekirV3.0.1/Log/output_image/mask.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 60, Size(width,height), true);
 
     while (!joyStick.close) {
         pthread_mutex_lock(&mutex);
@@ -134,6 +136,8 @@ void* vision(void* arg){
             }
             cv::imshow("image", bgr_frame);
             cv::imshow("image1", masked_image);
+
+            VideoWriter1.write(bgr_frame);
             
             
 
