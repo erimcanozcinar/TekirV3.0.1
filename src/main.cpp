@@ -131,7 +131,7 @@ void* vision(void* arg){
 
 
           
-                    RSINFO(boxDist)
+                    // RSINFO(boxDist)
                 }
             }
             cv::imshow("image", bgr_frame);
@@ -576,7 +576,8 @@ int main(int argc, char** argv) {
         server.integrateWorldThreadSafe(); 
 
         /* Log data (fp0:NewtonEulerTorques, fp1:PD_torques, fp2: InvDynTorques ) */
-        fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.Pfoot_RF(0), traj.Pfoot_RF(2), traj.Pfoot_LF(0), traj.Pfoot_LF(2), traj.Yawc/2, traj.ComYaw/2, traj.aa_LF(0));
+        fprintf(fp0, "%f %f %f %f %f\n", t, genCoordinates(0), genCoordinates(1), smb->getGeneralizedCoordinate()[0], smb->getGeneralizedCoordinate()[1]);
+        // fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.Pfoot_RF(0), traj.Pfoot_RF(2), traj.Pfoot_LF(0), traj.Pfoot_LF(2), traj.Yawc/2, traj.ComYaw/2, traj.aa_LF(0));
         // fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.Footx_R(0), traj.Footy_R(0), traj.Footz_R(0), traj.Footx_L(0), traj.Footy_L(0), traj.Footz_L(0), traj.Yaw);
         // fprintf(fp0, "%f %f %f %f %f %f %f %f %f\n", t, traj.Xc, traj.localStr_LF(0), traj.localStr_LF(1), traj.Footz_R(0), traj.Footx_L(0), traj.Footy_L(0), traj.Footz_L(0), traj.Yaw);
     }

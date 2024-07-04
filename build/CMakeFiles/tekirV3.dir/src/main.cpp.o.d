@@ -1,6 +1,8 @@
-CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
- /usr/include/stdc-predef.h /home/deno/CS523/include/main.hpp \
- /home/deno/raisimLib/build/include/raisim/World.hpp \
+CMakeFiles/tekirV3.dir/src/main.cpp.o: \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp \
+ /usr/include/stdc-predef.h \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/main.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/World.hpp \
  /usr/include/c++/11/memory /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -145,7 +147,7 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/deno/raisimLib/build/include/raisim/helper.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/helper.hpp \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
@@ -182,8 +184,8 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/c++/11/chrono /usr/include/c++/11/ratio \
  /usr/include/c++/11/limits /usr/include/c++/11/ctime \
  /usr/include/c++/11/bits/parse_numbers.h \
- /home/deno/raisimLib/build/include/raisim/raisim_message.hpp \
- /home/deno/raisimLib/build/include/raisim/raisim_message_logger.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/raisim_message.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/raisim_message_logger.hpp \
  /usr/include/c++/11/ostream /usr/include/c++/11/ios \
  /usr/include/c++/11/bits/ios_base.h \
  /usr/include/c++/11/bits/locale_classes.h \
@@ -250,8 +252,8 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
- /home/deno/raisimLib/build/include/raisim/Path.hpp \
- /home/deno/raisimLib/build/include/raisim/raisim_message.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/Path.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/raisim_message.hpp \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -260,19 +262,19 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /home/deno/raisimLib/build/include/raisim/object/Object.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/Object.hpp \
  /usr/include/c++/11/mutex /usr/include/c++/11/bits/std_mutex.h \
  /usr/include/c++/11/bits/unique_lock.h \
- /home/deno/raisimLib/build/include/raisim/contact/BisectionContactSolver.hpp \
- /home/deno/raisimLib/build/include/raisim/Materials.hpp \
- /home/deno/raisimLib/build/include/raisim/RaiSimTinyXmlWrapper.hpp \
- /home/deno/raisimLib/build/include/tinyxml_rai/tinyxml_rai.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/contact/BisectionContactSolver.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/Materials.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/RaiSimTinyXmlWrapper.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/tinyxml_rai/tinyxml_rai.h \
  /usr/include/string.h /usr/include/strings.h \
  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
  /usr/include/assert.h \
- /home/deno/raisimLib/build/include/tinyxml_rai/tinystr.h \
- /home/deno/raisimLib/build/include/raisim/math.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/tinyxml_rai/tinystr.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math.hpp \
  /usr/include/eigen3/Eigen/Core \
  /usr/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  /usr/include/eigen3/Eigen/src/Core/util/Macros.h \
@@ -410,8 +412,8 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \
  /usr/include/c++/11/pstl/glue_numeric_defs.h \
- /home/deno/raisimLib/build/include/raisim/math/Core.hpp \
- /home/deno/raisimLib/build/include/raisim/math/Expression.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Core.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Expression.hpp \
  /usr/include/eigen3/Eigen/Dense /usr/include/eigen3/Eigen/Core \
  /usr/include/eigen3/Eigen/LU /usr/include/eigen3/Eigen/src/misc/Kernel.h \
  /usr/include/eigen3/Eigen/src/misc/Image.h \
@@ -471,73 +473,74 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h \
  /usr/include/eigen3/Eigen/src/Eigenvalues/RealQZ.h \
  /usr/include/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h \
- /home/deno/raisimLib/build/include/raisim/math/Matrix.hpp \
- /home/deno/raisimLib/build/include/raisim/math/Blocks.hpp \
- /home/deno/raisimLib/build/include/raisim/math/Product.hpp \
- /home/deno/raisimLib/build/include/raisim/math/Operation.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Matrix.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Blocks.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Product.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/math/Operation.hpp \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
- /home/deno/raisimLib/build/include/raisim/configure.hpp \
- /home/deno/raisimLib/build/include/raisim/RaiSimTinyXmlWriter.hpp \
- /home/deno/raisimLib/build/include/raisim/contact/Contact.hpp \
- /home/deno/raisimLib/build/include/ode/objects.h \
- /home/deno/raisimLib/build/include/ode/common.h \
- /home/deno/raisimLib/build/include/ode/odeconfig.h \
- /home/deno/raisimLib/build/include/ode/precision.h \
- /home/deno/raisimLib/build/include/ode/error.h \
- /home/deno/raisimLib/build/include/ode/mass.h \
- /home/deno/raisimLib/build/include/ode/contact.h \
- /home/deno/raisimLib/build/include/ode/memory.h \
- /home/deno/raisimLib/build/include/ode/array.h /usr/include/c++/11/set \
- /usr/include/c++/11/bits/stl_tree.h /usr/include/c++/11/bits/stl_set.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/configure.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/RaiSimTinyXmlWriter.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/contact/Contact.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/objects.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/common.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/odeconfig.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/precision.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/error.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/mass.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/contact.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/memory.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/array.h \
+ /usr/include/c++/11/set /usr/include/c++/11/bits/stl_tree.h \
+ /usr/include/c++/11/bits/stl_set.h \
  /usr/include/c++/11/bits/stl_multiset.h \
- /home/deno/raisimLib/build/include/ode/ode.h \
- /home/deno/raisimLib/build/include/ode/compatibility.h \
- /home/deno/raisimLib/build/include/ode/odemath.h \
- /home/deno/raisimLib/build/include/ode/odemath_legacy.h \
- /home/deno/raisimLib/build/include/ode/matrix.h \
- /home/deno/raisimLib/build/include/ode/rotation.h \
- /home/deno/raisimLib/build/include/ode/misc.h \
- /home/deno/raisimLib/build/include/ode/collision_space.h \
- /home/deno/raisimLib/build/include/ode/collision.h \
- /home/deno/raisimLib/build/include/ode/collision_trimesh.h \
- /home/deno/raisimLib/build/include/ode/version.h \
- /home/deno/raisimLib/build/include/ode/odecpp_collision.h \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/SingleBodyObject.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/ode.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/compatibility.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/odemath.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/odemath_legacy.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/matrix.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/rotation.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/misc.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/collision_space.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/collision.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/collision_trimesh.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/version.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/ode/odecpp_collision.h \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/SingleBodyObject.hpp \
  /usr/include/eigen3/Eigen/Geometry \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Sphere.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/SingleBodyObject.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Cylinder.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Box.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Capsule.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Cone.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Compound.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/StiffLengthConstraint.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/LengthConstraint.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/Constraints.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/CustomLengthConstraint.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/CompliantLengthConstraint.hpp \
- /home/deno/raisimLib/build/include/raisim/object/terrain/Ground.hpp \
- /home/deno/raisimLib/build/include/raisim/object/terrain/HeightMap.hpp \
- /home/deno/raisimLib/build/include/raisim/Terrain.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Sphere.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/SingleBodyObject.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Cylinder.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Box.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Capsule.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Cone.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Compound.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/StiffLengthConstraint.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/LengthConstraint.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/Constraints.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/CustomLengthConstraint.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/CompliantLengthConstraint.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/terrain/Ground.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/terrain/HeightMap.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/Terrain.hpp \
  /usr/include/c++/11/random /usr/include/c++/11/bits/random.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
  /usr/include/c++/11/bits/random.tcc \
- /home/deno/raisimLib/build/include/raisim/object/ArticulatedSystem/ArticulatedSystem.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/ArticulatedSystem/ArticulatedSystem.hpp \
  /usr/include/c++/11/map /usr/include/c++/11/bits/stl_map.h \
  /usr/include/c++/11/bits/stl_multimap.h \
- /home/deno/raisimLib/build/include/raisim/object/ArticulatedSystem/JointAndBodies.hpp \
- /home/deno/raisimLib/build/include/raisim/object/singleBodies/Mesh.hpp \
- /home/deno/raisimLib/build/include/raisim/sensors/Sensors.hpp \
- /home/deno/raisimLib/build/include/raisim/server/SerializationHelper.hpp \
- /home/deno/raisimLib/build/include/raisim/constraints/PinConstraint.hpp \
- /home/deno/raisimLib/build/include/raisim/sensors/RGBSensor.hpp \
- /home/deno/raisimLib/build/include/raisim/sensors/DepthSensor.hpp \
- /home/deno/raisimLib/build/include/raisim/sensors/InertialMeasurementUnit.hpp \
- /home/deno/raisimLib/build/include/raisim/rayCollision.hpp \
- /home/deno/raisimLib/build/include/raisim/object/ArticulatedSystem/loaders.hpp \
- /home/deno/raisimLib/build/include/raisim/object/ArticulatedSystem/ArticulatedSystem.hpp \
- /home/deno/raisimLib/build/include/raisim/configure.hpp \
- /home/deno/raisimLib/build/include/raisim/RaisimServer.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/ArticulatedSystem/JointAndBodies.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/singleBodies/Mesh.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/sensors/Sensors.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/server/SerializationHelper.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/constraints/PinConstraint.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/sensors/RGBSensor.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/sensors/DepthSensor.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/sensors/InertialMeasurementUnit.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/rayCollision.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/ArticulatedSystem/loaders.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/ArticulatedSystem/ArticulatedSystem.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/configure.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/RaisimServer.hpp \
  /usr/include/arpa/inet.h /usr/include/netinet/in.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
@@ -586,10 +589,10 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/include/c++/11/bits/atomic_futex.h /usr/include/c++/11/queue \
  /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
  /usr/include/c++/11/bits/deque.tcc /usr/include/c++/11/bits/stl_queue.h \
- /home/deno/raisimLib/build/include/raisim/server/Visuals.hpp \
- /home/deno/raisimLib/build/include/raisim/server/Charts.hpp \
- /home/deno/raisimLib/build/include/raisim/server/SerializationHelper.hpp \
- /home/deno/raisimLib/build/include/raisim/object/ArticulatedSystem/JointAndBodies.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/server/Visuals.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/server/Charts.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/server/SerializationHelper.hpp \
+ /home/erim/raisim_ws_v1.1.7/install/include/raisim/object/ArticulatedSystem/JointAndBodies.hpp \
  /usr/local/include/allegro5/allegro.h /usr/local/include/allegro5/base.h \
  /usr/local/include/allegro5/internal/alconfig.h \
  /usr/local/include/allegro5/platform/alplatf.h \
@@ -633,8 +636,8 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/local/include/allegro5/alcompat.h \
  /usr/local/include/allegro5/platform/alunix.h \
  /usr/local/include/allegro5/allegro_native_dialog.h \
- /home/deno/CS523/include/trajectory.hpp \
- /home/deno/CS523/include/functions.hpp \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/trajectory.hpp \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/functions.hpp \
  /usr/local/include/opencv4/opencv2/core.hpp \
  /usr/local/include/opencv4/opencv2/core/cvdef.h \
  /usr/local/include/opencv4/opencv2/core/version.hpp \
@@ -664,19 +667,8 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/local/include/opencv4/opencv2/core/optim.hpp \
  /usr/local/include/opencv4/opencv2/core/ovx.hpp \
  /usr/local/include/opencv4/opencv2/core/cvdef.h \
- /usr/local/include/opencv4/opencv2/objdetect.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_dictionary.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_board.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/graphical_code_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/detection_based_tracker.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/face.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/charuco_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/barcode.hpp \
- /usr/local/include/opencv4/opencv2/imgproc.hpp \
- /usr/local/include/opencv4/opencv2/imgproc/segmentation.hpp \
- /usr/local/include/opencv4/opencv2/highgui.hpp \
  /usr/local/include/opencv4/opencv2/imgcodecs.hpp \
+ /usr/local/include/opencv4/opencv2/highgui.hpp \
  /usr/local/include/opencv4/opencv2/videoio.hpp \
  /usr/local/include/opencv4/opencv2/opencv.hpp \
  /usr/local/include/opencv4/opencv2/calib3d.hpp \
@@ -724,8 +716,19 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: /home/deno/CS523/src/main.cpp \
  /usr/local/include/opencv4/opencv2/flann/index_testing.h \
  /usr/local/include/opencv4/opencv2/flann/timer.h \
  /usr/local/include/opencv4/opencv2/flann/sampling.h \
+ /usr/local/include/opencv4/opencv2/imgproc.hpp \
+ /usr/local/include/opencv4/opencv2/imgproc/segmentation.hpp \
  /usr/local/include/opencv4/opencv2/ml.hpp \
  /usr/local/include/opencv4/opencv2/ml/ml.inl.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/aruco_detector.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/aruco_dictionary.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/aruco_board.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/graphical_code_detector.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/detection_based_tracker.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/face.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/charuco_detector.hpp \
+ /usr/local/include/opencv4/opencv2/objdetect/barcode.hpp \
  /usr/local/include/opencv4/opencv2/photo.hpp \
  /usr/local/include/opencv4/opencv2/stitching.hpp \
  /usr/local/include/opencv4/opencv2/stitching/warpers.hpp \
