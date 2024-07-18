@@ -179,7 +179,8 @@ int main(int argc, char** argv) {
 
 
     auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_camera.urdf");
-    auto smb = world.addArticulatedSystem("/home/erim/raisim_ws_v1.1.7/raisimLib-master/rsc/megabot/smb.urdf");
+    auto smb = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/smb.urdf");
+    // auto smb = world.addArticulatedSystem("/home/erim/raisim_ws_v1.1.7/raisimLib-master/rsc/megabot/smb.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh.urdf");
     // auto quadruped = world.addArticulatedSystem("/home/erim/raisim_ws/rsc/Tekir/urdf/tekir3.urdf");
 
