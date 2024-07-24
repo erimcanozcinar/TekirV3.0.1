@@ -241,7 +241,8 @@ Eigen::Vector3d quat2euler(double w, double x, double y, double z)
     double roll, pitch, yaw;
     Eigen::Vector3d orientation;
     roll = atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y));
-    pitch = asin(2 * (w * y - z * x));
+    // pitch = asin(2 * (w * y - z * x));
+    pitch = 2*atan2(sqrt(1+2*(w*y-x*z)),sqrt(1-2*(w*y-x*z))) - M_PI_2;
     yaw = atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z));
     orientation << roll, pitch, yaw;
     return orientation;
