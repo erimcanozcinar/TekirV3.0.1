@@ -673,9 +673,9 @@ Eigen::Matrix<double, 4, 3> VMC(const Eigen::Vector3d& Rcf1, const Eigen::Vector
     Eigen::VectorXd F(12);
     F.setZero();
 
-    if(Fc_LF(2) > 0 || Fc_RB(2) > 0) { contactState_L = 1; }
+    if(Fc_LF(2) > 0 || Fc_RB(2) > 20) { contactState_L = 1; }
     else { contactState_L = 0; }
-    if(Fc_RF(2) > 0 || Fc_LB(2) > 0) { contactState_R = 1; }
+    if(Fc_RF(2) > 0 || Fc_LB(2) > 20) { contactState_R = 1; }
     else { contactState_R = 0; }
 
     P << Eigen::MatrixXd::Identity(3,3)*contactState_L, Eigen::MatrixXd::Identity(3,3)*contactState_R, Eigen::MatrixXd::Identity(3,3)*contactState_R, Eigen::MatrixXd::Identity(3,3)*contactState_L,
@@ -880,6 +880,22 @@ Eigen::Vector3d fullBodyIKan(Eigen::Vector3d Rfoot, Eigen::Vector3d Rcom, Eigen:
     return Q;
 }
 
+Eigen::Vector3d balanceControl(Eigen::Matrix3d Rd, Eigen::Matrix3d R)
+{
+    Eigen::Matrix3d Re, angleSkw;
+    Eigen::Vector3d angles;
+    double thetha;
+    Re = Rd*R.transpose();
+
+    // thetha = acos((Re.trace() - 1)*0.5);
+    // angleSkw = (Re - Re.transpose())*thetha/(2*sin(thetha));
+
+    angleSkw = Re.log();
+
+    angles << angleSkw(2,1), angleSkw(0,2), angleSkw(1,0);
+    return angles;
+}
+
 /* Inverse Dynamics */
 Eigen::Matrix3d quat2Rotmat(double qw, double qx, double qy, double qz)
 {
@@ -923,7 +939,7 @@ Eigen::Vector3d funcNewtonEuler(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d root
     double m3 = 0.21; // Knee FE 2 Ankle
     double m4 = 0;
     Eigen::Vector3d gravityVec;
-    gravityVec << 0, 0, -9.81;
+    gravityVec << 0, 0, GRAVITY;
 
     double m, n, k;
     switch (legIndex) {
@@ -982,8 +998,8 @@ Eigen::Vector3d funcNewtonEuler(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d root
     //P45 << m * sin(q3)*(-0.066), n * 0, cos(q3)*(-0.066);
 
     // Link center of mass positions wrt previous joint
-    Pc0 << 0.000492378,0,0;
-    Pc1 << m*(0.075283), n*(-0.015862), -0.000015;
+    Pc0 << 0.00145, 0.003271, 0.01792;
+    Pc1 << m*(-0.003717), n*(-0.015862), -0.000015;
     Pc2 << m*(-0.003917), n*(0.076506), -0.013793;
     Pc3 << m*(-0.015346), n*(-0.000102), -0.186842;
     Pc4 = 0.5 * P45;

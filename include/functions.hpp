@@ -2,6 +2,7 @@
 #define FUNCTIONS_HPP
 
 #include "Eigen/Dense"
+#include "unsupported/Eigen/MatrixFunctions"
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -43,6 +44,7 @@ Eigen::Matrix<double, 4, 3> VMC(const Eigen::Vector3d& Rcf1, const Eigen::Vector
 double SolveQuadCosSin(double ann, double bnn, double cnn, int mu);
 Eigen::Vector3d fullBodyFK(Eigen::Vector3d torsoOrient, Eigen::Vector3d Rcom, Eigen::Vector3d Q, int u);
 Eigen::Vector3d fullBodyIKan(Eigen::Vector3d Rfoot, Eigen::Vector3d Rcom, Eigen::Vector3d torsoOrient, int u);
+Eigen::Vector3d balanceControl(Eigen::Matrix3d Rd, Eigen::Matrix3d R);
 /* Inverse Dynamics */
 Eigen::Matrix3d quat2Rotmat(double qw, double qx, double qy, double qz);
 Eigen::Vector3d funcNewtonEuler(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d rootOrient, Eigen::Vector3d rootAngVel, Eigen::Vector3d rootAngAcc, Eigen::Vector3d jPos, Eigen::Vector3d jVel, Eigen::Vector3d jAcc, Eigen::Vector3d grForce, Eigen::Vector3d Rcon, int legIndex);
