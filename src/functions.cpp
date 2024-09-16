@@ -1007,7 +1007,7 @@ Eigen::Vector3d funcNewtonEuler(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d root
     // Link inertia
     Inertia0 << 0.410, 0, 0,
                 0, 0.908, 0,
-                0, 0, 1.192;
+                0, 0, 1.1923;
     Inertia1 << 0.003, 0, 0,
                 0, 0.003, 0,
                 0, 0, 0.003;
