@@ -1150,6 +1150,216 @@ Eigen::Vector3d funcNewtonEuler(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d root
     return JTorques;
 }
 
+Eigen::Vector3d funcNewtonEuler2(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d rootOrient, Eigen::Vector3d rootAngVel, Eigen::Vector3d rootAngAcc, Eigen::Vector3d jPos, Eigen::Vector3d jVel, Eigen::Vector3d jAcc, Eigen::Vector3d grForce, Eigen::Vector3d Rcon, int legIndex)
+{
+    Eigen::Vector3d JTorques;
+    double q0, q1, q2, q3, q4, q5, q6, qf;
+    double dq0, dq1, dq2, dq3, dq4, dq5, dq6;
+    double ddq0, ddq1, ddq2, ddq3, ddq4, ddq5, ddq6;
+    Eigen::Matrix3d R10, R21, R32, R43, R54, R65, R60;
+    Eigen::Vector3d Jvel0, Jvel1, Jvel2, Jvel3, Jvel4, Jvel5, Jvel6;
+    Eigen::Vector3d Jacc0, Jacc1, Jacc2, Jacc3, Jacc4, Jacc5, Jacc6;
+    Eigen::Vector3d P01, P12, P23, P34, P45, P56;
+    Eigen::Vector3d Pc1, Pc2, Pc3, Pc4, Pc5;
+    double m1, m2, m3, m4, m5;
+    Eigen::Matrix3d Inertia1, Inertia2, Inertia3, Inertia4, Inertia5;
+
+    Eigen::Vector3d w0, w1, w2, w3, w4, w5;
+    Eigen::Vector3d dw0, dw1, dw2, dw3, dw4, dw5;
+    Eigen::Vector3d dv0, dv1, dv2, dv3, dv4, dv5;
+    Eigen::Vector3d dvc0, dvc1, dvc2, dvc3, dvc4, dvc5;
+    Eigen::Vector3d F1, F2, F3, F4, F5; 
+    Eigen::Vector3d N1, N2, N3, N4, N5;
+    Eigen::Vector3d f1, f2, f3, f4, f5, f6; 
+    Eigen::Vector3d n1, n2, n3, n4, n5, n6;
+
+    Eigen::Vector3d gravityVec;
+    gravityVec << 0, 0, GRAVITY;
+
+    int m, n;
+    switch (legIndex) {
+    case 1: // LF
+        m = 1; // For roll and x axis
+        n = 1; // For pitch and y axis
+        qf = 30*PI/180;
+        break;
+    case 2: // RF
+        m = 1; // For roll and x axis
+        n = -1; // For pitch and y axis
+        qf = -30*PI/180;
+        break;
+    case 3: // LB
+        m = -1; // For roll and x axis
+        n = 1; // For pitch and y axis
+        qf = -30*PI/180;
+        break;
+    case 4: // RB
+        m = -1; // For roll and x axis
+        n = -1; // For pitch and y axis
+        qf = 30*PI/180;
+        break;
+    }
+
+    /* #region: Joint position & orientation matrix */
+    q0 = 0.0; // world joint (fixed)
+    q1 = 0.0; // Torso orientation (q1 is not used rootOrient matrix is used instead) 
+    q2 = m*jPos(0); // Hip AA joint
+    q3 = n*jPos(1); // Hip FE joint
+    q4 = n*jPos(2); //Knee FE joint
+    q5 = n*qf; // Foot Frame joint
+    q6 = 0.0; // Tip of foot
+
+    // R10: Rotates points in frame {1} to frame {0}
+    R10 = rootOrient; // Rotation from Torso frame to World frame
+    R21 = RotateRoll(q2); // Rotation from Hip AA joint frame to Torso frame
+    R32 = RotatePitch(q3); // Rotation from Hip FE joint frame to Hip AA joint frame
+    R43 = RotatePitch(q4); // Rotation from Knee FE joint frame to Hip FE joint frame
+    R54 = RotatePitch(q5); // Rotation from Foot frame to Knee FE joint frame
+    R65.setIdentity(); // Rotation from Tip of foot frame to Foot frame
+    /* #endregion */
+
+    /* #region: Joint angular velocity */
+    dq0 = 0.0; // world joint (fixed)
+    dq1 = 0.0; // Torso angular velocity (dq1 is not used rootAngVel vector is used instead) 
+    dq2 = m*jVel(0); // Hip AA joint
+    dq3 = n*jVel(1); // Hip FE joint
+    dq4 = n*jVel(2); //Knee FE joint
+    dq5 = 0.0; // Foot Frame joint
+    dq6 = 0.0; // Tip of foot
+
+    Jvel0 << 0, 0, 0;
+    Jvel1 = rootAngVel;
+    Jvel2 << dq2, 0, 0;
+    Jvel3 << 0, dq3, 0;
+    Jvel4 << 0, dq4, 0;
+    Jvel5 << 0, dq5, 0;
+    Jvel6 << 0, dq6, 0;
+    /* #endregion */
+
+    /* #region: Joint angular acceleration */
+    ddq0 = 0.0; // world joint (fixed)
+    ddq1 = 0.0; // Torso angular acceleration (ddq1 is not used rootAngAcc vector is used instead) 
+    ddq2 = m*jAcc(0); // Hip AA joint
+    ddq3 = n*jAcc(1); // Hip FE joint
+    ddq4 = n*jAcc(2); //Knee FE joint
+    ddq5 = 0.0; // Foot Frame joint
+    ddq6 = 0.0; // Tip of foot
+
+    Jacc0 << 0, 0, 0;
+    Jacc1 = rootAngAcc;
+    Jacc2 << ddq2, 0, 0;
+    Jacc3 << 0, ddq3, 0;
+    Jacc4 << 0, ddq4, 0;
+    Jacc5 << 0, ddq5, 0;
+    Jacc6 << 0, ddq6, 0;
+    /* #endregion */
+
+    /* #region: Joint position wrt prev. joint */
+    P01 << 0.0000, 0.0000, 0.0000;
+    P12 << m*0.3102, n*0.1050, 0.0020;
+    P23 << m*0.0790, n*0.0262, 0.0000;
+    P34 << m*0.0000, n*0.1102, -0.2700;
+    P45 << m*0.0000, n*0.0000, -0.224282;
+    P56 << m*0.0000, n*0.0000, -0.107131;
+    /* #endregion */
+
+    /* #region: Link center of mass positions wrt prev. joint */
+    Pc1 << 0.00145, 0.003271, 0.01792; // Link 1 (Torso COM)
+    Pc2 << m*(-0.003717), n*(-0.015862), -0.000015; // Link 2
+    Pc3 << m*(-0.003917), n*(0.076506), -0.013793; // Link 3
+    Pc4 << m*(-0.015346), n*(-0.000102), -0.186842; // Link 4
+    Pc5 << m*(0.0), n*(0.0), -0.003546; // Link 5
+    /* #endregion */
+
+    /* #region: Link mass */
+    m1 = 20.516; // Torso (Joint 1-2)
+    m2 = 1.681; // Hip FE&AA motors (Joint 2-3)
+    m3 = 2.005; // Thigh (Joint 3-4)
+    m4 = 0.21; // Shank (Joint 4-5) 
+    m5 = 0.0; // Foot (Joint 5-6)
+    /* #endregion */
+
+    /* #region: Link inertia */
+    Inertia1 << 0.410, 0.003, -0.012,  
+                0.003, 0.908, 0.007,
+                -0.012, 0.007, 1.192; // Torso (Joint 1-2)
+    Inertia2 << 0.003, 9.851e-5, -1.213e-6,
+                9.851e-5, 0.003, -1.327e-6,
+                -1.213e-6, -1.327e-6, 0.003; // Hip FE&AA motors (Joint 2-3)
+    Inertia3 << 0.008, -1.818e-4, 5.307e-4,
+                -1.818e-4, 0.007, 0.001,
+                5.307e-4, 0.001, 0.004; // Thigh (Joint 3-4)
+    Inertia4 << 0.002, -7.048e-7, -2.682e-4,
+                -7.048e-7, 0.002, -1.088e-5,
+                -2.682e-4, -1.088e-5, 1.086e-4; // Shank (Joint 4-5) 
+    Inertia5 << 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0; // Foot (Joint 5-6)
+    /* #endregion */
+    
+
+    /*********** Outward iteration **********/
+    // World (Joint 0)
+    w0.setZero();
+    dw0.setZero();
+    dv0 = gravityVec;
+    dvc0.setZero();
+    // Torso (Joint 1)
+    w1 = R10.transpose()*w0 + Jvel1;
+    dw1 = R10.transpose()*dw0 + (R10.transpose()*w0).cross(Jvel1) + Jacc1;
+    dv1 = R10.transpose()*(dw0.cross(P01) + w0.cross(w0.cross(P01)) + dv0 + rootAbsAcc);
+    dvc1 = dw1.cross(Pc1) + w1.cross(w1.cross(Pc1)) + dv1;
+    F1 = m1*dvc1;
+    N1 = Inertia1*dw1 + w1.cross(Inertia1*w1);
+    // Hip AA (Joint 2)
+    w2 = R21.transpose()*w1 + Jvel2;
+    dw2 = R21.transpose()*dw1 + (R21.transpose()*w1).cross(Jvel2) + Jacc2;
+    dv2 = R21.transpose()*(dw1.cross(P12) + w1.cross(w1.cross(P12)) + dv1);
+    dvc2 = dw2.cross(Pc2) + w2.cross(w2.cross(Pc2)) + dv2;
+    F2 = m2*dvc2;
+    N2 = Inertia2*dw2 + w2.cross(Inertia2*w2);
+    // Hip FE (Joint 3)
+    w3 = R32.transpose()*w2 + Jvel3;
+    dw3 = R32.transpose()*dw2 + (R32.transpose()*w2).cross(Jvel3) + Jacc3;
+    dv3 = R32.transpose()*(dw2.cross(P23) + w2.cross(w2.cross(P23)) + dv2);
+    dvc3 = dw3.cross(Pc3) + w3.cross(w3.cross(Pc3)) + dv3;
+    F3 = m3*dvc3;
+    N3 = Inertia3*dw3 + w3.cross(Inertia3*w3);
+    // Knee FE (Joint 4)
+    w4 = R43.transpose()*w3 + Jvel4;
+    dw4 = R43.transpose()*dw3 + (R43.transpose()*w3).cross(Jvel4) + Jacc4;
+    dv4 = R43.transpose()*(dw3.cross(P34) + w3.cross(w3.cross(P34)) + dv3);
+    dvc4 = dw4.cross(Pc4) + w4.cross(w4.cross(Pc4)) + dv4;
+    F4 = m4*dvc4;
+    N4 = Inertia4*dw4 + w4.cross(Inertia4*w4);
+    // Footframe (Joint 5)
+    w5 = R54.transpose()*w4 + Jvel5;
+    dw5 = R54.transpose()*dw4 + (R54.transpose()*w4).cross(Jvel5) + Jacc5;
+    dv5 = R54.transpose()*(dw4.cross(P45) + w4.cross(w4.cross(P45)) + dv4);
+    dvc5 = dw5.cross(Pc5) + w5.cross(w5.cross(Pc5)) + dv5;
+    F5 = m5*dvc5;
+    N5 = Inertia5*dw5 + w5.cross(Inertia5*w5);
+
+    /*********** Inward iteration **********/
+    R60 = R10*R21*R32*R43*R54*R65;
+    f6 = R60.transpose()*(-grForce); // Force acting on tip of foot (Joint 6)    
+    f5 = R65*f6 + F5; // Force acting on Footframe (Joint 5) 
+    f4 = R54*f5 + F4; // Force acting on Knee FE (Joint 4)
+    f3 = R43*f4 + F3; // Force acting on Hip FE (Joint 3)
+    f2 = R32*f3 + F2; // Force acting on Hip AA (Joint 2)
+    f1 = R21*f2 + F1; // Force acting on Torso (Joint 1)
+    
+    n6 << 0, 0, 0; // Moment acting on tip of foot (Joint 6)    
+    n5 = N5 + R65*n6 + Pc5.cross(F5) + P56.cross(R65*f6); // Moment acting on Footframe (Joint 5)
+    n4 = N4 + R54*n5 + Pc4.cross(F4) + P45.cross(R54*f5); // Moment acting on Knee FE (Joint 4)
+    n3 = N3 + R43*n4 + Pc3.cross(F3) + P34.cross(R43*f4); // Moment acting on Hip FE (Joint 3)
+    n2 = N2 + R32*n3 + Pc2.cross(F2) + P23.cross(R32*f3); // Moment acting on Hip AA (Joint 2)
+    n1 = N1 + R21*n2 + Pc1.cross(F1) + P12.cross(R21*f2); // Moment acting on Torso (Joint 1)
+
+    JTorques << m*n2(0), n*n3(1), n*n4(1);
+    return JTorques;
+}
+
 Eigen::Matrix<double, 12, 1> funNewtonEuler4Leg(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d rootOrient, Eigen::Vector3d rootAngVel, Eigen::Vector3d rootAngAcc, Eigen::VectorXd jPos, Eigen::VectorXd jVel, Eigen::VectorXd jAcc, Eigen::Vector3d grForce_LF, Eigen::Vector3d grForce_RF, Eigen::Vector3d grForce_LB, Eigen::Vector3d grForce_RB)
 {
     Eigen::Vector3d jPos_LF, jPos_RF, jPos_LB, jPos_RB;
@@ -1181,10 +1391,10 @@ Eigen::Matrix<double, 12, 1> funNewtonEuler4Leg(Eigen::Vector3d rootAbsAcc, Eige
     Rfoot_LB = rootOrient * RotateRoll(jPos_LB(0)) * RotatePitch(jPos_LB(1)) * RotatePitch(jPos_LB(2)) * RotatePitch(30 * PI / 180);
     Rfoot_RB = rootOrient * RotateRoll(jPos_RB(0)) * RotatePitch(jPos_RB(1)) * RotatePitch(jPos_RB(2)) * RotatePitch(-30 * PI / 180);
 
-    Tau_LF = funcNewtonEuler(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_LF, jVel_LF, jAcc_LF, grForce_LF, Rcon_LF, 1);
-    Tau_RF = funcNewtonEuler(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_RF, jVel_RF, jAcc_RF, grForce_RF, Rcon_RF, 2);
-    Tau_LB = funcNewtonEuler(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_LB, jVel_LB, jAcc_LB, grForce_LB, Rcon_LB, 3);
-    Tau_RB = funcNewtonEuler(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_RB, jVel_RB, jAcc_RB, grForce_RB, Rcon_RB, 4);
+    Tau_LF = funcNewtonEuler2(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_LF, jVel_LF, jAcc_LF, grForce_LF, Rcon_LF, 1);
+    Tau_RF = funcNewtonEuler2(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_RF, jVel_RF, jAcc_RF, grForce_RF, Rcon_RF, 2);
+    Tau_LB = funcNewtonEuler2(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_LB, jVel_LB, jAcc_LB, grForce_LB, Rcon_LB, 3);
+    Tau_RB = funcNewtonEuler2(rootAbsAcc, rootOrient, rootAngVel, rootAngAcc, jPos_RB, jVel_RB, jAcc_RB, grForce_RB, Rcon_RB, 4);
 
     jTorques << Tau_LF(0), Tau_LF(1), Tau_LF(2), Tau_RF(0), Tau_RF(1), Tau_RF(2), Tau_LB(0), Tau_LB(1), Tau_LB(2), Tau_RB(0), Tau_RB(1), Tau_RB(2);
 
