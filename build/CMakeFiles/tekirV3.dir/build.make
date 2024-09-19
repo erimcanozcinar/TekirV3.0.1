@@ -73,43 +73,43 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: CMakeFiles/tekirV3.dir/flags.make
 CMakeFiles/tekirV3.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/tekirV3.dir/src/main.cpp.o: CMakeFiles/tekirV3.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/erim/RaiSim_Simulations/TekirV3.0.1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/tekirV3.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/main.cpp.o -MF CMakeFiles/tekirV3.dir/src/main.cpp.o.d -o CMakeFiles/tekirV3.dir/src/main.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/main.cpp.o -MF CMakeFiles/tekirV3.dir/src/main.cpp.o.d -o CMakeFiles/tekirV3.dir/src/main.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp
 
 CMakeFiles/tekirV3.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tekirV3.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp > CMakeFiles/tekirV3.dir/src/main.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp > CMakeFiles/tekirV3.dir/src/main.cpp.i
 
 CMakeFiles/tekirV3.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tekirV3.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp -o CMakeFiles/tekirV3.dir/src/main.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/main.cpp -o CMakeFiles/tekirV3.dir/src/main.cpp.s
 
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: CMakeFiles/tekirV3.dir/flags.make
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: ../src/trajectory.cpp
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: CMakeFiles/tekirV3.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/erim/RaiSim_Simulations/TekirV3.0.1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tekirV3.dir/src/trajectory.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/trajectory.cpp.o -MF CMakeFiles/tekirV3.dir/src/trajectory.cpp.o.d -o CMakeFiles/tekirV3.dir/src/trajectory.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/trajectory.cpp.o -MF CMakeFiles/tekirV3.dir/src/trajectory.cpp.o.d -o CMakeFiles/tekirV3.dir/src/trajectory.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp
 
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tekirV3.dir/src/trajectory.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp > CMakeFiles/tekirV3.dir/src/trajectory.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp > CMakeFiles/tekirV3.dir/src/trajectory.cpp.i
 
 CMakeFiles/tekirV3.dir/src/trajectory.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tekirV3.dir/src/trajectory.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp -o CMakeFiles/tekirV3.dir/src/trajectory.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/trajectory.cpp -o CMakeFiles/tekirV3.dir/src/trajectory.cpp.s
 
 CMakeFiles/tekirV3.dir/src/functions.cpp.o: CMakeFiles/tekirV3.dir/flags.make
 CMakeFiles/tekirV3.dir/src/functions.cpp.o: ../src/functions.cpp
 CMakeFiles/tekirV3.dir/src/functions.cpp.o: CMakeFiles/tekirV3.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/erim/RaiSim_Simulations/TekirV3.0.1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tekirV3.dir/src/functions.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/functions.cpp.o -MF CMakeFiles/tekirV3.dir/src/functions.cpp.o.d -o CMakeFiles/tekirV3.dir/src/functions.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tekirV3.dir/src/functions.cpp.o -MF CMakeFiles/tekirV3.dir/src/functions.cpp.o.d -o CMakeFiles/tekirV3.dir/src/functions.cpp.o -c /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp
 
 CMakeFiles/tekirV3.dir/src/functions.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tekirV3.dir/src/functions.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp > CMakeFiles/tekirV3.dir/src/functions.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp > CMakeFiles/tekirV3.dir/src/functions.cpp.i
 
 CMakeFiles/tekirV3.dir/src/functions.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tekirV3.dir/src/functions.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp -o CMakeFiles/tekirV3.dir/src/functions.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/erim/RaiSim_Simulations/TekirV3.0.1/src/functions.cpp -o CMakeFiles/tekirV3.dir/src/functions.cpp.s
 
 # Object files for target tekirV3
 tekirV3_OBJECTS = \

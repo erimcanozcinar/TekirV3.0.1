@@ -324,10 +324,10 @@ int main(int argc, char** argv) {
         for (int i = 0; i < 3; i++)
         {
             // i = 0: Hip AA, i = 1: Hip FE, i = 2: Knee FE
-            Tau_LF(i) = Kp(i)*(Q_LF(i) - q_LF(i)) + Kd(i)*(dQ_LF(i) - dq_LF(i)) + jffTorques(i);
-            Tau_RF(i) = Kp(i)*(Q_RF(i) - q_RF(i)) + Kd(i)*(dQ_RF(i) - dq_RF(i)) + jffTorques(i+3);
-            Tau_LB(i) = Kp(i)*(Q_LB(i) - q_LB(i)) + Kd(i)*(dQ_LB(i) - dq_LB(i)) + jffTorques(i+6);
-            Tau_RB(i) = Kp(i)*(Q_RB(i) - q_RB(i)) + Kd(i)*(dQ_RB(i) - dq_RB(i)) + jffTorques(i+9);
+            Tau_LF(i) = Kp(i)*(Q_LF(i) - q_LF(i)) + Kd(i)*(dQ_LF(i) - dq_LF(i)) + 0*jffTorques(i);
+            Tau_RF(i) = Kp(i)*(Q_RF(i) - q_RF(i)) + Kd(i)*(dQ_RF(i) - dq_RF(i)) + 0*jffTorques(i+3);
+            Tau_LB(i) = Kp(i)*(Q_LB(i) - q_LB(i)) + Kd(i)*(dQ_LB(i) - dq_LB(i)) + 0*jffTorques(i+6);
+            Tau_RB(i) = Kp(i)*(Q_RB(i) - q_RB(i)) + Kd(i)*(dQ_RB(i) - dq_RB(i)) + 0*jffTorques(i+9);
         }
         /* #endregion */
 
@@ -336,8 +336,8 @@ int main(int argc, char** argv) {
         F << 0, 0, 0, 0, 0, 0, Tau_LF(0), Tau_LF(1), Tau_LF(2), Tau_RF(0), Tau_RF(1), Tau_RF(2), Tau_LB(0), Tau_LB(1), Tau_LB(2), Tau_RB(0), Tau_RB(1), Tau_RB(2);
         quadruped->setGeneralizedForce(F);
         JF << 0, 0, 0, 0, 0, 0, jffTorques2(0), jffTorques2(1), jffTorques2(2), jffTorques2(3), jffTorques2(4), jffTorques2(5),jffTorques2(6), jffTorques2(7), jffTorques2(8), jffTorques2(9), jffTorques2(10), jffTorques2(11);
-        RSWARN(torqueFromInverseDynamics)
-        RSINFO(JF)
+        RSWARN(torqueFromInverseDynamics - JF)
+        // RSINFO(Fcon_LF)
         // RSINFO("-----------------------")
         /* #endregion */
 

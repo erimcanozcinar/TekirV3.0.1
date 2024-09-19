@@ -1233,6 +1233,7 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/local/include/qpOASES/SQProblem.ipp \
   /usr/local/include/qpOASES/SQProblemSchur.hpp \
   /usr/local/include/qpOASES/SparseSolver.hpp \
+  /usr/local/include/qpOASES/LapackBlasReplacement.hpp \
   /usr/local/include/qpOASES/SQProblemSchur.ipp \
   /usr/local/include/qpOASES/extras/OQPinterface.hpp \
   /usr/local/include/qpOASES/extras/SolutionAnalysis.hpp \
@@ -1813,6 +1814,8 @@ CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: ../src/trajectory.cpp \
 /usr/local/include/qpOASES/extras/SolutionAnalysis.ipp:
 
 /usr/local/include/qpOASES/SQProblemSchur.ipp:
+
+/usr/local/include/qpOASES/LapackBlasReplacement.hpp:
 
 /usr/local/include/qpOASES/SparseSolver.hpp:
 

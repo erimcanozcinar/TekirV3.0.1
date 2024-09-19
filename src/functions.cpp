@@ -1341,7 +1341,7 @@ Eigen::Vector3d funcNewtonEuler2(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d roo
     N5 = Inertia5*dw5 + w5.cross(Inertia5*w5);
 
     /*********** Inward iteration **********/
-    R60 = R10*R21*R32*R43*R54*R65;
+    R60 = R10*R21*R32*R43*R54*R65; // Rotation from Tip of foot frame to World frame
     f6 = R60.transpose()*(-grForce); // Force acting on tip of foot (Joint 6)    
     f5 = R65*f6 + F5; // Force acting on Footframe (Joint 5) 
     f4 = R54*f5 + F4; // Force acting on Knee FE (Joint 4)
