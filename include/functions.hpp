@@ -43,6 +43,7 @@ Eigen::Matrix<double, 4, 3> refForceCalc4(const Eigen::Vector3d& Rcf1, const Eig
 Eigen::Matrix<double, 4, 3> VMC(const Eigen::Vector3d& Rcf1, const Eigen::Vector3d& Rcf2, const Eigen::Vector3d& Rcf3, const Eigen::Vector3d& Rcf4, const Eigen::Vector3d& Fc_LF, const Eigen::Vector3d& Fc_RF, const Eigen::Vector3d& Fc_LB, const Eigen::Vector3d& Fc_RB, Eigen::VectorXd C, double dt);
 double SolveQuadCosSin(double ann, double bnn, double cnn, int mu);
 Eigen::Vector3d fullBodyFK(Eigen::Vector3d torsoOrient, Eigen::Vector3d Rcom, Eigen::Vector3d Q, int u);
+Eigen::Vector3d fullBodyFK2(Eigen::Matrix3d torsoOrient, Eigen::Vector3d Rcom, Eigen::Vector3d Q, int u);
 Eigen::Vector3d fullBodyIKan(Eigen::Vector3d Rfoot, Eigen::Vector3d Rcom, Eigen::Vector3d torsoOrient, int u);
 Eigen::Vector3d balanceControl(Eigen::Matrix3d Rd, Eigen::Matrix3d R);
 /* Inverse Dynamics */

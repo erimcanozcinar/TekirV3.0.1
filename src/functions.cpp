@@ -782,6 +782,109 @@ Eigen::Vector3d fullBodyFK(Eigen::Vector3d torsoOrient, Eigen::Vector3d Rcom, Ei
     return P7;
 }
 
+Eigen::Vector3d fullBodyFK2(Eigen::Matrix3d torsoOrient, Eigen::Vector3d Rcom, Eigen::Vector3d Q, int u)
+{
+    int m, n, f;
+    double L, W, H;
+
+    double Xc = Rcom(0);
+    double Yc = Rcom(1);
+    double Zc = Rcom(2);
+
+    Eigen::Vector3d P7;
+
+    switch (u)
+    {
+    case 1:
+        m = 1;
+        n = 1;
+        f = 1;
+        L = 0.3102;
+        W = 0.105;
+        H = 0.002;
+        break;
+    case 2:
+        m = 1;
+        n = -1;
+        f = 1;
+        L = 0.3102;
+        W = -0.105;
+        H = 0.002;
+        break;
+    case 3:
+        m = -1;
+        n = 1;
+        f = -1;
+        L = -0.3102;
+        W = 0.105;
+        H = 0.002;
+        break;
+    case 4:
+        m = -1;
+        n = -1;
+        f = -1;
+        L = -0.3102;
+        W = -0.105;
+        H = 0.002;
+        break;
+    }
+
+    Eigen::Vector3d Rhip,Rcom2hip;
+    Rhip << L, W, H;
+    Rcom2hip = Rhip - Rcom;
+
+    double q0 = m*Q(0);
+    double q1 = n*Q(1);
+    double q2 = n*Q(2);
+    double q3 = f*30*PI/180;
+
+    // Link Lengths
+    Eigen::Vector3d L0, L1, L2, L3, L4, L5;
+    Eigen::Vector4d vone;
+    double d0 = m * 0.079;
+    double d1 = n * 0.0262;
+    double d2 = n * 0.1102;
+    double d3 = -0.27;
+    double d4 = -0.224282;
+    double d5 = -0.107131; //-0.107131;
+
+    L0 << d0, 0, 0;    
+    L1 << 0, d1, 0;    
+    L2 << 0, d2, 0;    
+    L3 << 0, 0, d3;    
+    L4 << 0, 0, d4;    
+    L5 << 0, 0, d5;
+
+    vone << 0, 0, 0, 1; 
+
+    Eigen::Matrix4d T01, T12, T23, T34, T45, T56, T67, T78;
+    Eigen::Matrix4d T02, T03, T04, T05, T06, T07, T08;
+
+    T01 << torsoOrient, Rcom, vone.transpose();
+    T12 << RotateRoll(q0), Rhip, vone.transpose();
+    T23 << Eigen::MatrixXd::Identity(3,3), L0, vone.transpose();
+    T34 << RotatePitch(q1), L1, vone.transpose();
+    T45 << Eigen::MatrixXd::Identity(3,3), L2, vone.transpose();
+    T56 << RotatePitch(q2), L3, vone.transpose();
+    T67 << RotatePitch(q3), L4, vone.transpose();
+    T78 << Eigen::MatrixXd::Identity(3,3), L5, vone.transpose();
+
+    // T01 = (T01);
+    // T02 = (T01*T12);
+    // T03 = (T01*T12*T23);
+    // T04 = (T01*T12*T23*T34);
+    // T05 = (T01*T12*T23*T34*T45);
+    // T06 = (T01*T12*T23*T34*T45*T56);
+    // T07 = (T01*T12*T23*T34*T45*T56*T67);
+    T08 = (T01*T12*T23*T34*T45*T56*T67*T78);
+
+    P7(0) = T08(0,3);
+    P7(1) = T08(1,3);
+    P7(2) = T08(2,3);
+    
+    return P7;
+}
+
 Eigen::Vector3d fullBodyIKan(Eigen::Vector3d Rfoot, Eigen::Vector3d Rcom, Eigen::Vector3d torsoOrient, int u)
 {
     int m, n, f;
@@ -1303,7 +1406,7 @@ Eigen::Vector3d funcNewtonEuler2(Eigen::Vector3d rootAbsAcc, Eigen::Matrix3d roo
     w0.setZero();
     dw0.setZero();
     dv0 = gravityVec;
-    dvc0.setZero();
+    dvc0 = gravityVec;
     // Torso (Joint 1)
     w1 = R10.transpose()*w0 + Jvel1;
     dw1 = R10.transpose()*dw0 + (R10.transpose()*w0).cross(Jvel1) + Jacc1;

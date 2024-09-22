@@ -246,26 +246,29 @@ int main(int argc, char** argv) {
         /* #endregion */
 
         /* #region: VMC CONTROLLER FOR TORSO */
-        Rf_LF = fullBodyFK(torsoRot, 0*Pcom, q_LF, 1);
-        Rf_RF = fullBodyFK(torsoRot, 0*Pcom, q_RF, 2);
-        Rf_LB = fullBodyFK(torsoRot, 0*Pcom, q_LB, 3);
-        Rf_RB = fullBodyFK(torsoRot, 0*Pcom, q_RB, 4);
+        Rf_LF = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_LF, 1);
+        Rf_RF = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_RF, 2);
+        Rf_LB = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_LB, 3);
+        Rf_RB = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_RB, 4);
+        Eigen::MatrixXd Rf(3,4);
+        Rf << Rf_LF, Rf_RF, Rf_LB, Rf_RB;
+        RSWARN(Rf)
 
-        dtorsoRot << Numdiff(torsoRot(0), prev_torsoRot(0), dt), Numdiff(torsoRot(1), prev_torsoRot(1), dt), Numdiff(torsoRot(2), prev_torsoRot(2), dt);
-        ddtorsoRot << Numdiff(dtorsoRot(0), prev_dtorsoRot(0), dt), Numdiff(dtorsoRot(1), prev_dtorsoRot(1), dt), Numdiff(dtorsoRot(2), prev_dtorsoRot(2), dt);
-        prev_torsoRot = torsoRot;
-        prev_dtorsoRot = dtorsoRot;
+        // dtorsoRot << Numdiff(torsoRot(0), prev_torsoRot(0), dt), Numdiff(torsoRot(1), prev_torsoRot(1), dt), Numdiff(torsoRot(2), prev_torsoRot(2), dt);
+        // ddtorsoRot << Numdiff(dtorsoRot(0), prev_dtorsoRot(0), dt), Numdiff(dtorsoRot(1), prev_dtorsoRot(1), dt), Numdiff(dtorsoRot(2), prev_dtorsoRot(2), dt);
+        // prev_torsoRot = torsoRot;
+        // prev_dtorsoRot = dtorsoRot;
 
-        orientControlRef = QuaternionRef(torsoRot(0), torsoRot(1), torsoRot(2), dtorsoRot(0), dtorsoRot(1), dtorsoRot(2), ddtorsoRot(0), ddtorsoRot(1), ddtorsoRot(2));
-        Eigen::Vector3d Wref, dWref, quatVecRef, quatVec;
-        Wref << orientControlRef(4),orientControlRef(5),orientControlRef(6);
-        dWref << orientControlRef(7),orientControlRef(8),orientControlRef(9);
-        quatVecRef << orientControlRef(1), orientControlRef(2), orientControlRef(3);
-        quatVec << genCoordinates(4), genCoordinates(5), genCoordinates(6);
+        // orientControlRef = QuaternionRef(torsoRot(0), torsoRot(1), torsoRot(2), dtorsoRot(0), dtorsoRot(1), dtorsoRot(2), ddtorsoRot(0), ddtorsoRot(1), ddtorsoRot(2));
+        // Eigen::Vector3d Wref, dWref, quatVecRef, quatVec;
+        // Wref << orientControlRef(4),orientControlRef(5),orientControlRef(6);
+        // dWref << orientControlRef(7),orientControlRef(8),orientControlRef(9);
+        // quatVecRef << orientControlRef(1), orientControlRef(2), orientControlRef(3);
+        // quatVec << genCoordinates(4), genCoordinates(5), genCoordinates(6);
 
-        Mvmc = Itorso*(dWref + sqrt(50)*(Wref - rootAngvelocity) - 50*(orientControlRef(0)*quatVec - genCoordinates(3)*quatVecRef + vec2SkewSym(quatVecRef)*quatVec));
+        // Mvmc = Itorso*(dWref + sqrt(50)*(Wref - rootAngvelocity) - 50*(orientControlRef(0)*quatVec - genCoordinates(3)*quatVecRef + vec2SkewSym(quatVecRef)*quatVec));
 
-        Fvmc << (traj.ddXc + (traj.Xc-genCoordinates(0))*10 + (traj.dXc - genVelocity(0))*1), (traj.Yc + (traj.ddYc-genCoordinates(1))*10 + (traj.dYc - genVelocity(1))*1), (MASS*GRAVITY + (ddZcom-genAcceleration(2))*0 + (0 - genVelocity(2))*0), Mvmc(0), Mvmc(1), Mvmc(2);
+        // Fvmc << (traj.ddXc + (traj.Xc-genCoordinates(0))*10 + (traj.dXc - genVelocity(0))*1), (traj.Yc + (traj.ddYc-genCoordinates(1))*10 + (traj.dYc - genVelocity(1))*1), (MASS*GRAVITY + (ddZcom-genAcceleration(2))*0 + (0 - genVelocity(2))*0), Mvmc(0), Mvmc(1), Mvmc(2);
         
         Eigen::Vector3d Wbd, angleErr;
         Eigen::Matrix3d Kpw, Kdw;
@@ -324,10 +327,10 @@ int main(int argc, char** argv) {
         for (int i = 0; i < 3; i++)
         {
             // i = 0: Hip AA, i = 1: Hip FE, i = 2: Knee FE
-            Tau_LF(i) = Kp(i)*(Q_LF(i) - q_LF(i)) + Kd(i)*(dQ_LF(i) - dq_LF(i)) + 0*jffTorques(i);
-            Tau_RF(i) = Kp(i)*(Q_RF(i) - q_RF(i)) + Kd(i)*(dQ_RF(i) - dq_RF(i)) + 0*jffTorques(i+3);
-            Tau_LB(i) = Kp(i)*(Q_LB(i) - q_LB(i)) + Kd(i)*(dQ_LB(i) - dq_LB(i)) + 0*jffTorques(i+6);
-            Tau_RB(i) = Kp(i)*(Q_RB(i) - q_RB(i)) + Kd(i)*(dQ_RB(i) - dq_RB(i)) + 0*jffTorques(i+9);
+            Tau_LF(i) = Kp(i)*(Q_LF(i) - q_LF(i)) + Kd(i)*(dQ_LF(i) - dq_LF(i)) + jffTorques(i);
+            Tau_RF(i) = Kp(i)*(Q_RF(i) - q_RF(i)) + Kd(i)*(dQ_RF(i) - dq_RF(i)) + jffTorques(i+3);
+            Tau_LB(i) = Kp(i)*(Q_LB(i) - q_LB(i)) + Kd(i)*(dQ_LB(i) - dq_LB(i)) + jffTorques(i+6);
+            Tau_RB(i) = Kp(i)*(Q_RB(i) - q_RB(i)) + Kd(i)*(dQ_RB(i) - dq_RB(i)) + jffTorques(i+9);
         }
         /* #endregion */
 
@@ -336,7 +339,7 @@ int main(int argc, char** argv) {
         F << 0, 0, 0, 0, 0, 0, Tau_LF(0), Tau_LF(1), Tau_LF(2), Tau_RF(0), Tau_RF(1), Tau_RF(2), Tau_LB(0), Tau_LB(1), Tau_LB(2), Tau_RB(0), Tau_RB(1), Tau_RB(2);
         quadruped->setGeneralizedForce(F);
         JF << 0, 0, 0, 0, 0, 0, jffTorques2(0), jffTorques2(1), jffTorques2(2), jffTorques2(3), jffTorques2(4), jffTorques2(5),jffTorques2(6), jffTorques2(7), jffTorques2(8), jffTorques2(9), jffTorques2(10), jffTorques2(11);
-        RSWARN(torqueFromInverseDynamics - JF)
+        // RSWARN(torqueFromInverseDynamics - JF)
         // RSINFO(Fcon_LF)
         // RSINFO("-----------------------")
         /* #endregion */
