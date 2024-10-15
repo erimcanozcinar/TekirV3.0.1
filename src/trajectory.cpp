@@ -690,31 +690,43 @@ void trajectory::comTrajectory(double RealTime, double Ts, double Td, int Nphase
 }
 
 void trajectory::trajGeneration(double RealTime, bool walkEnable, double command_Vx, double command_Vy, double command_Yaw, double height, double dt)
-{   
+{
 
     if(!walk_enabled && walkEnable) w_start_time = RealTime;
     walk_enabled = walkEnable;
 
     if(walk_enabled){
-        can_switch = (AreDoubleSame(Footz_RF(0),Fc)) || (AreDoubleSame(Footz_LF(0),Fc));
+        // can_switch = (AreDoubleSame(Footz_RF(0),Fc)) || (AreDoubleSame(Footz_LF(0),Fc));
+        if(Fc_coeff == 1){
+            can_switch = (AreDoubleSame(Footz_RF(0),Fc)) || (AreDoubleSame(Footz_LF(0),Fc));
+        } else {
+            can_switch = (AreDoubleSame(Footz_RF(0),0)) && (AreDoubleSame(Footz_LF(0),0));
+        }
+            
     } else {
         can_switch = false;
     }
 
 
-    if(abs(Vx_mean) > 0 || abs(Vy_mean) > 0){
+    if(abs(Vx_mean) > 0 || abs(Vy_mean) > 0 || abs(Yaw_mean) > 0){
         can_stop = false;
     } else {
-        can_stop = (AreDoubleSame(Footz_RF(0),0)) && (AreDoubleSame(Footz_LF(0),0));
+        // can_stop = (AreDoubleSame(Footz_RF(0),0)) && (AreDoubleSame(Footz_LF(0),0));
+        if ((AreDoubleSame(Footz_RF(0),0)) && (AreDoubleSame(Footz_LF(0),0))){
+            can_stop = true;
+            Fc_coeff = 0;
+        }
     }
 
     if(can_switch && walk_enabled){
         Vx_mean = command_Vx; 
         Vy_mean = command_Vy;
         Yaw_mean = command_Yaw;
+        if(abs(Vx_mean) > 0 || abs(Vy_mean) > 0 || abs(Yaw_mean) > 0){
+            Fc_coeff = 1;
+        }
     }
-
-
+    
     if(prev_vx_mean != Vx_mean) Comx += Cx;
     if(prev_vy_mean != Vy_mean) Comy += Cy;
     if(prev_Yaw_mean != Yaw_mean) ComYaw += Cyaw; 
@@ -756,8 +768,8 @@ void trajectory::trajGeneration(double RealTime, bool walkEnable, double command
     if(walk_enabled) { Yawc = Cyaw/2; }
     else { Yawc = command_Yaw; }  
 
-    Pfoot_LF << Footx_LF(0) + offsetPf_LF(0) + Comx, Footy_LF(0) + offsetPf_LF(1) + Comy, Footz_LF(0) + offsetPf_LF(2);  
-    Pfoot_RF << Footx_RF(0) + offsetPf_RF(0) + Comx, Footy_RF(0) + offsetPf_RF(1) + Comy, Footz_RF(0) + offsetPf_RF(2);  
-    Pfoot_LB << Footx_LB(0) + offsetPf_LB(0) + Comx, Footy_LB(0) + offsetPf_LB(1) + Comy, Footz_LB(0) + offsetPf_LB(2);  
-    Pfoot_RB << Footx_RB(0) + offsetPf_RB(0) + Comx, Footy_RB(0) + offsetPf_RB(1) + Comy, Footz_RB(0) + offsetPf_RB(2);  
+    Pfoot_LF << Footx_LF(0) + offsetPf_LF(0) + Comx, Footy_LF(0) + offsetPf_LF(1) + Comy, Fc_coeff*Footz_LF(0) + offsetPf_LF(2);  
+    Pfoot_RF << Footx_RF(0) + offsetPf_RF(0) + Comx, Footy_RF(0) + offsetPf_RF(1) + Comy, Fc_coeff*Footz_RF(0) + offsetPf_RF(2);  
+    Pfoot_LB << Footx_LB(0) + offsetPf_LB(0) + Comx, Footy_LB(0) + offsetPf_LB(1) + Comy, Fc_coeff*Footz_LB(0) + offsetPf_LB(2);  
+    Pfoot_RB << Footx_RB(0) + offsetPf_RB(0) + Comx, Footy_RB(0) + offsetPf_RB(1) + Comy, Fc_coeff*Footz_RB(0) + offsetPf_RB(2);  
 }

@@ -483,4 +483,5 @@ CMakeFiles/tekirV3.dir/src/trajectory.cpp.o: \
  /usr/include/eigen3/unsupported/Eigen/src/MatrixFunctions/MatrixLogarithm.h \
  /usr/include/eigen3/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h \
  /usr/include/eigen3/unsupported/Eigen/../../Eigen/src/Core/util/ReenableStupidWarnings.h \
- /usr/include/c++/11/iostream
+ /usr/include/c++/11/iostream \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/parameters.hpp

@@ -5,10 +5,10 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
 #include "functions.hpp"
+#include "parameters.hpp"
 
 class controller {
     protected:
-        double initZc = 0.53319176863337994221048177223565; // 0.53319176863337994221048177223565
         double Kv = 0.1;
         double MIN_BODY_HEIGHT = 0.101;
         double MAX_BODY_HEIGHT = 0.58;
@@ -25,6 +25,7 @@ class controller {
         double joyCmd[22] = {0.0, 0.0, 0.0, 0.0, 0.0, initZc, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         bool close = false;
         bool walkEnable = false;
+        bool latsag_corr = false;
 
         void initiateRobot(double RealTime);
         void xboxController(ALLEGRO_EVENT_QUEUE *event_queue, ALLEGRO_EVENT event, ALLEGRO_JOYSTICK* joyStick);
@@ -35,6 +36,7 @@ class trajectory {
     protected:
         double prev_vx_mean = 0.0, prev_vy_mean = 0.0;
         bool walk_enabled = false;
+        bool latsag_Corr = false;
         bool can_switch = false;
         bool can_stop = false;
         double w_start_time = 0.0;
@@ -48,6 +50,7 @@ class trajectory {
         double Td = 0.12;						            // Double support phase period
         double Fc = 0.15;
         double Xzmp = 0, Yzmp = 0, Kphase;
+        double Fc_coeff = 0;
 
         double Cx, dCx, ddCx;
         double Cy, dCy, ddCy;
@@ -61,6 +64,7 @@ class trajectory {
         Eigen::Vector3d Pend_LF, Pend_RF, Pend_LB, Pend_RB;
 
         double Pfx_offset = 0.36634099999999997221422631810128, Pfy_offset = 0.2414, Pfz_offset = 0; //0.36634099999999997221422631810128
+        // double Pfx_offset = 0.42737384807162298594462868095434, Pfy_offset = 0.34457194863979007104504148628621, Pfz_offset = 0; //0.36634099999999997221422631810128
         double LatOut = 0.0;
 
     public:
@@ -71,7 +75,7 @@ class trajectory {
         Eigen::Vector3d Footz_LF, Footz_RF, Footz_LB, Footz_RB;
         Eigen::Vector2d turnFootz_L, turnFootz_R, turnFootx_L, turnFootx_R, turnFooty_L, turnFooty_R;
 
-        double Zc = 0.101;
+        double Zc = initZc;
         double Xc = 0.0, Yc = 0.0;
         double dXc = 0.0, dYc = 0.0;
         double ddXc = 0.0, ddYc = 0.0;

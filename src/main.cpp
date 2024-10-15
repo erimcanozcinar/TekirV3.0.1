@@ -9,7 +9,8 @@ int main(int argc, char** argv) {
     world.setTimeStep(0.001);
     world.setMaterialPairProp("steel", "steel", 0.95, 0.95, 0.001, 0.95, 0.001);
     world.setMaterialPairProp("steel", "rubber", 2, 0.15, 0.001, 2, 0.001);
-    auto ground = world.addGround(0, "steel");
+    auto hm = world.addHeightMap("/home/erim/raisim_ws_v1.1.7/raisimLib-master/rsc/xmlScripts/heightMaps/heightMapExample.txt", -5.0, 10.0, "steel");
+    // auto ground = world.addGround(0, "steel");
     // ground->setAppearance("hidden");
 
     auto quadruped = world.addArticulatedSystem("/home/erim/RaiSim_Simulations/TekirV3.0.1/rsc/urdf/tekir3mesh_new.urdf");
@@ -69,7 +70,7 @@ int main(int argc, char** argv) {
     Q_RF = fullBodyIKan(traj.Pfoot_RF, Pcom, torsoRot, 2);
     Q_LB = fullBodyIKan(traj.Pfoot_LB, Pcom, torsoRot, 3);
     Q_RB = fullBodyIKan(traj.Pfoot_RB, Pcom, torsoRot, 4);
-    initialConditions << initComX, initComY, initComZ, initQuat_w, initQuat_x, initQuat_y, initQuat_z, Q_LF(0), Q_LF(1), Q_LF(2), Q_RF(0), Q_RF(1), Q_RF(2), Q_LB(0), Q_LB(1), Q_LB(2), Q_RB(0), Q_RB(1), Q_RB(2);
+    initialConditions << initComX-5.0, initComY+8.0, initComZ, initQuat_w, initQuat_x, initQuat_y, initQuat_z, Q_LF(0), Q_LF(1), Q_LF(2), Q_RF(0), Q_RF(1), Q_RF(2), Q_LB(0), Q_LB(1), Q_LB(2), Q_RB(0), Q_RB(1), Q_RB(2);
     quadruped->setGeneralizedCoordinate(initialConditions);
     /* #endregion */
 
@@ -246,13 +247,10 @@ int main(int argc, char** argv) {
         /* #endregion */
 
         /* #region: VMC CONTROLLER FOR TORSO */
-        Rf_LF = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_LF, 1);
-        Rf_RF = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_RF, 2);
-        Rf_LB = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_LB, 3);
-        Rf_RB = fullBodyFK2(Eigen::Matrix3d::Identity(), 0*Pcom, Q_RB, 4);
-        Eigen::MatrixXd Rf(3,4);
-        Rf << Rf_LF, Rf_RF, Rf_LB, Rf_RB;
-        RSWARN(Rf)
+        Rf_LF = fullBodyFK2(rootOrientation, 0*Pcom, Q_LF, 1);
+        Rf_RF = fullBodyFK2(rootOrientation, 0*Pcom, Q_RF, 2);
+        Rf_LB = fullBodyFK2(rootOrientation, 0*Pcom, Q_LB, 3);
+        Rf_RB = fullBodyFK2(rootOrientation, 0*Pcom, Q_RB, 4);
 
         // dtorsoRot << Numdiff(torsoRot(0), prev_torsoRot(0), dt), Numdiff(torsoRot(1), prev_torsoRot(1), dt), Numdiff(torsoRot(2), prev_torsoRot(2), dt);
         // ddtorsoRot << Numdiff(dtorsoRot(0), prev_dtorsoRot(0), dt), Numdiff(dtorsoRot(1), prev_dtorsoRot(1), dt), Numdiff(dtorsoRot(2), prev_dtorsoRot(2), dt);
@@ -288,7 +286,7 @@ int main(int argc, char** argv) {
         Fvmc(2) = (0*(traj.Zc-genCoordinates(2)) + sqrt(0)*(0 - genVelocity(2)) + MASS*GRAVITY);
         Fvmc(3) = Mvmc(0);
         Fvmc(4) = Mvmc(1);
-        Fvmc(5) = Mvmc(2);
+        Fvmc(5) = 0*Mvmc(2);
         
         // Fvmc << 0, 0, MASS*GRAVITY, Mvmc(0), Mvmc(1), 0;
         Fmatrix = VMC(Rf_LF-Rcom, Rf_RF-Rcom, Rf_LB-Rcom, Rf_RB-Rcom, Fcon_LF, Fcon_RF, Fcon_LB, Fcon_RB, Fvmc, dt);

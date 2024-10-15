@@ -661,6 +661,7 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: \
  /usr/local/include/qpOASES/SQProblem.ipp \
  /usr/local/include/qpOASES/SQProblemSchur.hpp \
  /usr/local/include/qpOASES/SparseSolver.hpp \
+ /usr/local/include/qpOASES/LapackBlasReplacement.hpp \
  /usr/local/include/qpOASES/SQProblemSchur.ipp \
  /usr/local/include/qpOASES/extras/OQPinterface.hpp \
  /usr/local/include/qpOASES/extras/SolutionAnalysis.hpp \
@@ -681,4 +682,5 @@ CMakeFiles/tekirV3.dir/src/main.cpp.o: \
  /usr/include/eigen3/unsupported/Eigen/src/MatrixFunctions/MatrixSquareRoot.h \
  /usr/include/eigen3/unsupported/Eigen/src/MatrixFunctions/MatrixLogarithm.h \
  /usr/include/eigen3/unsupported/Eigen/src/MatrixFunctions/MatrixPower.h \
- /usr/include/eigen3/unsupported/Eigen/../../Eigen/src/Core/util/ReenableStupidWarnings.h
+ /usr/include/eigen3/unsupported/Eigen/../../Eigen/src/Core/util/ReenableStupidWarnings.h \
+ /home/erim/RaiSim_Simulations/TekirV3.0.1/include/parameters.hpp
